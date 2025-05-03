@@ -1,0 +1,162 @@
+.explore-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.explore-button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--font-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.explore-button:hover {
+  color: var(--head-color);
+}
+
+.dropdown-arrow {
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+  font-weight: 700;
+  margin-left: 0.3rem;
+}
+
+/* Dropdown Content */
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  box-shadow: 0 8px 16px var(--box-shadow);
+  border-radius: 8px;
+  padding: 1.5rem;
+  z-index: 1000;
+  width: 1000px;
+  max-width: 95vw;
+  overflow: hidden;
+}
+
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.dropdown-section h4 {
+  color: var(--head-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--primary-green);
+  padding-bottom: 0.5rem;
+}
+
+.dropdown-section a {
+  display: block;
+  padding: 0.5rem 0;
+  color: var(--font-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.dropdown-section a:hover {
+  color: var(--head-color);
+  padding-left: 0.5rem;
+}
+
+/* Submenu Styles */
+.submenu-trigger {
+  position: relative;
+  cursor: pointer;
+  color: var(--font-secondary);
+  padding: 0.5rem 0;
+  font-weight: 600;
+}
+
+.submenu-trigger span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.submenu {
+  padding: 0.5rem 0 0.5rem 1.2rem;
+  border-left: 3px solid var(--primary-green);
+  margin: 0.5rem 0;
+}
+
+.submenu a {
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.submenu a::before {
+  content: "•";
+  color: var(--primary-green);
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* Mobile Styles */
+.explore-dropdown.mobile {
+  width: 100%;
+}
+
+.explore-dropdown.mobile .explore-button {
+  width: 100%;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+}
+
+.explore-dropdown.mobile .dropdown-content {
+  position: static;
+  width: 100%;
+  box-shadow: none;
+  padding: 1rem 0 0 1rem;
+  background: transparent;
+}
+
+.explore-dropdown.mobile .dropdown-grid {
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.explore-dropdown.mobile .submenu {
+  padding-left: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .dropdown-content {
+    width: 320px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem;
+  }
+  
+  .dropdown-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dropdown-content {
+    width: 800px;
+  }
+  
+  .dropdown-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

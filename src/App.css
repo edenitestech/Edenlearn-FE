@@ -1,0 +1,75 @@
+:root {
+    --font-color: #fff;
+    --head-color: #036d35;
+    --primary-blue: #004C6D;
+    --primary-green: #119C4C;
+    --hover-blue: #006B99;
+    --hover-green: #17BF61;
+    --box-shadow: #0000005d;
+  
+    --secondary-navy: #00354F;
+    --secondary-mint: #A8E6C2;
+    --secondary-sky: #B3E5FC;
+  
+    --parchment: #fff9e6;
+    --parchment-border: #e0d0b1;
+    --ink-dark: #5a4a3a;
+    --ink-light: #7a6a5a;
+
+    --bg-default: #F9F9F9;
+    --bg-section: #ECF7F2;
+    --bg-footer: #002B40;
+  
+    --font-primary: #2D2D2D;
+    --font-secondary: #5E5E5E;
+    --font-inverted: #F5F5F5;
+  
+    --accent-warning: #FF9800;
+    --accent-error: #F44336;
+    --accent-success: #4CAF50;
+    --accent-info: #03A9F4;
+  }
+  
+  * {
+    box-sizing: border-box;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  body {
+    margin: 0;
+    background-color: #f1f1f1;
+    color: var(--font-primary);
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit; /* Inherit color naturally from parent unless styled differently */
+    font-weight: bold;
+  }
+  
+
+.main-form, .course-card{
+max-width: 300px;
+box-shadow: 2px 4px 12px #00000088;
+padding: 1.5rem .75rem;
+border-radius: 10px;
+}
+
+
+.courses-list{
+display: flex;
+align-items: center;
+justify-content: space-evenly;
+/* flex-direction: row; */
+}
+#enroll-course{
+/* display: block; */
+margin-left: 10px;
+}
+
+
+
+/* =========================== LOGIN Page =============== */
+
+

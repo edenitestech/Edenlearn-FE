@@ -1,0 +1,346 @@
+/* Course Progress */
+.course-progress .courses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .course-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease;
+  }
+  
+  .course-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .course-image {
+    width: 80px;
+    height: 70px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .course-details {
+    flex: 1;
+  }
+  
+  .course-details h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+  }
+  
+  .progress-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: var(--head-color);
+    border-radius: 4px;
+  }
+  
+  .last-accessed {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0;
+  }
+  
+  .continue-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--head-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  /* Upcoming Courses */
+  .upcoming-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .upcoming-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .upcoming-image {
+    width: 80px;
+    height: 60px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .upcoming-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .upcoming-details h4 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1rem;
+  }
+  
+  .instructor, .start-date {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0.2rem 0;
+  }
+  
+  .enroll-btn {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    background-color: var(--head-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  
+  /* Recommended Courses */
+  .recommended-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .recommended-item {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .recommended-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .course-rating {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: #000000b3;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  
+  .course-info {
+    padding: 1rem;
+  }
+  
+  .course-info h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+  }
+  
+  .course-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  .explore-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--head-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  /* Profile Card */
+  .profile-card {
+    text-align: center;
+  }
+  
+  .profile-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .avatar {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background-color: var(--head-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .profile-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  .profile-info p {
+    margin: 0.3rem 0 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .profile-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .stat-item {
+    padding: 0.8rem;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--head-color);
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  .edit-profile {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: white;
+    color: var(--head-color);
+    border: 1px solid var(--head-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  
+  .edit-profile:hover {
+    background-color: var(--head-color);
+    color: white;
+  }
+  
+  /* Admin Stats */
+  .admin-stats .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+  
+  .stat-icon {
+    font-size: 1.5rem;
+  }
+  
+  .stat-content .stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+  }
+  
+  .stat-content .stat-label {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  /* Shared dashboard component styles */
+.dashboard-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.card-header h3 {
+  color: var(--head-color);
+  font-size: 1.2rem;
+}
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .recommended-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .profile-stats {
+      grid-template-columns: 1fr;
+    }
+    
+    .admin-stats .stats-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .course-item, .upcoming-item {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .progress-container {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .admin-stats .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
