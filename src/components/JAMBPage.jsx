@@ -714,7 +714,7 @@ const JAMBPage = () => {
   };
 
   return (
-    <JAMBContainer>
+    <JAMBContainer data-aos="fade-in">
       <HeroSection>
         <HeroTitle>JAMB Exam Preparation</HeroTitle>
         <HeroText>Comprehensive resources to help you ace your UTME examination</HeroText>

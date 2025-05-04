@@ -1,9 +1,10 @@
-// HeroSection.jsx (Refactored using Styled-Components)
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import heroImage from '../assets/Hero-image copy.png';
+import AOS from 'aos';
+import 'aos/dist/aos.css'; 
 
 const HeroSectionWrapper = styled.div`
   min-height: 100vh;
@@ -142,7 +143,7 @@ const CTAButton = styled(Link)`
 
   &:hover {
     transform: translateY(-2px);
-    transition: 2s;
+    transition: 1s;
     ${props => props.variant === 'primary' && `
       color: var(--primary-green);
       box-shadow: 0.3em 0.3em 0 0 var(--head-color), inset 0.3em 0.3em 0 0 var(--head-color);
@@ -157,19 +158,52 @@ const CTAButton = styled(Link)`
 `;
 
 const HeroSection = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-quart',
+      once: true, // Animations only happen once
+      mirror: false
+    });
+  }, []);
   return (
     <HeroSectionWrapper>
       <HeroContent>
         <HeroText>
-          <Heading1 data-aos="zoom-in">Edenites Academy</Heading1>
-          <Heading2>Explore. | Learn. | Succeed.</Heading2>
-          <Paragraph>Explore our courses and start learning today!</Paragraph>
+        <Heading1 
+            data-aos="zoom-out" 
+            data-aos-delay="100"
+            data-aos-anchor-placement="center-bottom"
+          >Edenites Academy</Heading1>
+          <Heading2 
+            data-aos="fade-up" 
+            data-aos-delay="300"
+          >Explore. | Learn. | Succeed.</Heading2>
+          <Paragraph 
+            data-aos="fade-up" 
+            data-aos-delay="500"
+          >Explore our courses and start learning today!</Paragraph>
           <HeroCTA>
-            <CTAButton to="/login?form=signup" variant="primary">Start 7-day Free Trial</CTAButton>
-            <CTAButton to="/courses" variant="secondary">Explore Courses</CTAButton>
+            <CTAButton
+              to="/login?form=signup" 
+              variant="primary"
+              data-aos="zoom-in-left" 
+              data-aos-delay="700"
+            >
+            Start 7-day Free Trial</CTAButton>
+            <CTAButton 
+              to="/courses" 
+              variant="secondary"
+              data-aos="zoom-in-right" 
+              data-aos-delay="700"
+            >Explore Courses</CTAButton>
           </HeroCTA>
         </HeroText>
-        <HeroImage>
+        <HeroImage 
+          data-aos="zoom-in" 
+          data-aos-delay="300"
+          data-aos-duration="1000"
+        >
           <img src={heroImage} alt="Learning at Edenites" />
         </HeroImage>
       </HeroContent>
@@ -178,3 +212,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+

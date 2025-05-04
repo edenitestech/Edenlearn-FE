@@ -78,7 +78,6 @@ const StartButton = styled(Link)`
   padding: 0.6rem 1.2rem;
   border-radius: 4px;
   font-weight: 600;
-  text-decoration: none;
   transition: 0.3s;
   cursor: pointer;
   margin-top: 1rem;
@@ -145,7 +144,11 @@ const WAECPrepPage = () => {
   );
 
   return (
-    <Container>
+    <Container
+    data-aos="zoom-in-left" 
+    data-aos-anchor-placement="top-center"
+    data-aos-duration="800"
+      >
       <Hero>
         <h1>WAEC Prep Subjects</h1>
         <input

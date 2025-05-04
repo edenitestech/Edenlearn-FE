@@ -160,7 +160,7 @@ const NECOPrepPage = () => {
   );
 
   return (
-    <Container>
+    <Container data-aos="zoom-in">
       <Hero>
         <h1>NECO Prep Page</h1>
         <p>Get ready for NECO with our comprehensive subject resources and practice questions.</p>

@@ -249,7 +249,11 @@ const ITSoftwarePage = () => {
   };
 
   return (
-    <div>
+    <div 
+    data-aos="zoom-in-left" 
+    data-aos-anchor-placement="top-center"
+    data-aos-duration="800"
+      >
       {/* Hero Section */}
       <HeroSection image={heroImages[currentHeroImage]}>
         <HeroContent>

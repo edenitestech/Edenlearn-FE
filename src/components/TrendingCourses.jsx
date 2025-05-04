@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const TopCourses = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-quad',
+      once: true,
+      offset: 20
+    });
+  }, []);
+
   const courses = [
     {
       id: 1,
@@ -97,16 +108,41 @@ const TopCourses = () => {
   ];
 
   return (
-    <TopCoursesSection>
+    <TopCoursesSection data-aos="fade-up">
       <Container>
-        <SectionTitle>Top Trending Courses</SectionTitle>
+        <SectionTitle 
+          data-aos="fade-down" 
+          data-aos-delay="100"
+          data-aos-anchor-placement="center-bottom"
+        >
+          Top Trending Courses
+        </SectionTitle>
+        
         <CoursesGrid>
-          {courses.map(course => (
-            <CourseCard key={course.id}>
+          {courses.map((course, index) => (
+            <CourseCard 
+              key={course.id}
+              data-aos="zoom-in-up"
+              data-aos-delay={100 + (index * 50)} // Staggered delay
+              data-aos-anchor-placement="top-center"
+            >
               <CourseImage>
-                <img src={course.image} alt={course.title} />
-                {course.isTrending && <TrendingBadge>Trending</TrendingBadge>}
+                <img 
+                  src={course.image} 
+                  alt={course.title} 
+                  data-aos="zoom-in"
+                  data-aos-delay="300"
+                />
+                {course.isTrending && (
+                  <TrendingBadge 
+                    data-aos="fade-left"
+                    data-aos-delay="500"
+                  >
+                    Trending
+                  </TrendingBadge>
+                )}
               </CourseImage>
+              
               <CourseDetails>
                 <CourseCategory>{course.category}</CourseCategory>
                 <CourseTitle>{course.title}</CourseTitle>
@@ -116,12 +152,24 @@ const TopCourses = () => {
                   <Students>👥 {course.students.toLocaleString()}</Students>
                 </CourseMeta>
                 <CoursePrice>${course.price}</CoursePrice>
-                <EnrollButton>Enroll Now</EnrollButton>
+                <EnrollButton
+                  data-aos="fade-up"
+                  data-aos-delay="200"
+                >
+                  Enroll Now
+                </EnrollButton>
               </CourseDetails>
             </CourseCard>
           ))}
         </CoursesGrid>
-        <ViewAllLink to="/courses">View All Courses</ViewAllLink>
+        
+        <ViewAllLink 
+          to="/courses"
+          data-aos="fade-up"
+          data-aos-delay="300"
+        >
+          View All Courses
+        </ViewAllLink>
       </Container>
     </TopCoursesSection>
   );
@@ -129,10 +177,13 @@ const TopCourses = () => {
 
 export default TopCourses;
 
-// Styled Components (keep the existing styles)
+// Styled Components
 const TopCoursesSection = styled.section`
   padding: 1rem 0;
 `;
+
+
+
 
 const Container = styled.div`
   max-width: 1200px;
@@ -170,14 +221,19 @@ const CourseCard = styled.div`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px var(--box-shadow);
-  transition: all 0.3s ease;
+  transition: all 0.3s ease !important; /* Important to override AOS */
   display: flex;
   flex-direction: column;
   width: 240px;
+  transform: translateZ(0); /* Hardware acceleration */
+
+  &[data-aos] {
+    transition: transform 0.6s ease, opacity 0.6s ease !important;
+  }
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px) scale(1.02) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 `;
 
@@ -191,11 +247,12 @@ const CourseImage = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
+    transform: translateZ(0);
   }
 
   ${CourseCard}:hover & img {
-    transform: scale(1.03);
+    transform: scale(1.05) translateZ(0);
   }
 `;
 

@@ -1,7 +1,81 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { FaLaptopCode, FaTshirt, FaTools, FaBook } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
+const OurProducts = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 600,
+      once: false,
+      useClassNames: false 
+    });
+  }, []);
+
+
+  const products = [
+    {
+      icon: <FaLaptopCode />,
+      title: 'IT and Software',
+      description: 'Master cutting-edge technologies with our expert-led courses in programming and software development.',
+      path: '/it-software'
+    },
+    {
+      icon: <FaTshirt />,
+      title: 'Fashion Design',
+      description: 'Unleash your creativity with comprehensive fashion design courses from basics to advanced techniques.',
+      path: '/fashion-design'
+    },
+    {
+      icon: <FaTools />,
+      title: 'Leather Crafting',
+      description: 'Learn the art of leather crafting with hands-on training from skilled artisans.',
+      path: '/leather-crafting'
+    },
+    {
+      icon: <FaBook />,
+      title: 'CBT Exams',
+      description: 'Prepare for WAEC, NECO, and JAMB with our comprehensive computer-based test preparation courses.',
+      path: '/cbt-exams'
+    }
+  ];
+
+  const handleCardClick = (path) => {
+    navigate(path);
+  };
+
+  return (
+    <Section id="our-products" data-aos="fade-up">
+      <Container>
+        <Title data-aos="fade-down" data-aos-delay="100">
+          Our Learning Programs
+        </Title>
+        <ProductsGrid>
+          {products.map((product, index) => (
+            <ProductCard 
+              key={index}
+              onClick={() => handleCardClick(product.path)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && handleCardClick(product.path)}
+              data-aos="zoom-in-up"
+              data-aos-delay={150 * (index + 1)}
+              data-aos-anchor-placement="top-center"
+            >
+              <ProductIcon>{product.icon}</ProductIcon>
+              <ProductTitle>{product.title}</ProductTitle>
+              <ProductDescription>{product.description}</ProductDescription>
+            </ProductCard>
+          ))}
+        </ProductsGrid>
+      </Container>
+    </Section>
+  );
+};
 
 const Section = styled.section`
   padding: 2rem 0;
@@ -41,11 +115,17 @@ const ProductCard = styled.div`
   border-radius: 8px;
   box-shadow: 0 5px 15px var(--box-shadow);
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
+  transform: translateZ(0); /* Hardware acceleration */
+
+  &[data-aos] {
+    transition: transform 0.6s ease, opacity 0.6s ease !important;
+  }
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px) translateZ(0) !important;
+    box-shadow: 0 8px 25px #1c233a;
   }
 `;
 
@@ -65,63 +145,5 @@ const ProductDescription = styled.p`
   line-height: 1.4;
   font-size: 0.9rem;
 `;
-
-const OurProducts = () => {
-  const navigate = useNavigate();
-
-  const products = [
-    {
-      icon: <FaLaptopCode />,
-      title: 'IT and Software',
-      description: 'Master cutting-edge technologies with our expert-led courses in programming and software development.',
-      path: '/it-software'
-    },
-    {
-      icon: <FaTshirt />,
-      title: 'Fashion Design',
-      description: 'Unleash your creativity with comprehensive fashion design courses from basics to advanced techniques.',
-      path: '/fashion-design'
-    },
-    {
-      icon: <FaTools />,
-      title: 'Leather Crafting',
-      description: 'Learn the art of leather crafting with hands-on training from skilled artisans.',
-      path: '/leather-crafting'
-    },
-    {
-      icon: <FaBook />,
-      title: 'CBT Exams',
-      description: 'Prepare for WAEC, NECO, and JAMB with our comprehensive computer-based test preparation courses.',
-      path: '/cbt-exams'
-    }
-  ];
-
-  const handleCardClick = (path) => {
-    navigate(path);
-  };
-
-  return (
-    <Section id="our-products">
-      <Container>
-        <Title>Our Learning Programs</Title>
-        <ProductsGrid>
-          {products.map((product, index) => (
-            <ProductCard 
-              key={index}
-              onClick={() => handleCardClick(product.path)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && handleCardClick(product.path)}
-            >
-              <ProductIcon>{product.icon}</ProductIcon>
-              <ProductTitle>{product.title}</ProductTitle>
-              <ProductDescription>{product.description}</ProductDescription>
-            </ProductCard>
-          ))}
-        </ProductsGrid>
-      </Container>
-    </Section>
-  );
-};
 
 export default OurProducts;

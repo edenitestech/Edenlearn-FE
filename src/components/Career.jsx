@@ -191,7 +191,8 @@ const CareersPage = () => {
       <SectionTitle>Current Opportunities</SectionTitle>
       <CareerGrid>
         {careerOpportunities.map((job) => (
-          <CareerCard key={job.id}>
+          <CareerCard key={job.id}
+          data-aos="zoom-in-up">
             <CareerTitle>{job.title}</CareerTitle>
             <CareerMeta>
               <span>{job.type}</span>
