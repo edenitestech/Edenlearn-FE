@@ -1,6 +1,6 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/Home';
-import Career from './components/Career'
+import Career from './components/Career';
 import HRcontactForm from './components/HRcontactForm';
 import CareerApplication from './components/CareerApplicationForm';
 import Courses from './pages/Courses';
@@ -17,7 +17,9 @@ import ITSoftwarePage from './components/ITSoftwarePage';
 import FashionDesignPage from './components/FashionPage';
 import LeatherCraftingPage from './components/LeatherCraftingPage';
 import CBTExamsPage from './components/CBTExamsPage';
-
+import Dashboard from './components/Dashboard';
+import Profile from './components/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const AppRoutes = () => {
   return (
@@ -37,22 +39,20 @@ const AppRoutes = () => {
       <Route path="/fashion-design" element={<FashionDesignPage />} />
       <Route path="/leather-crafting" element={<LeatherCraftingPage />} />
       <Route path="/cbt-exams" element={<CBTExamsPage />} />
-      {/* <Route path="/fashion-design/:topic" element={<FashionTopicPage />} /> */}
-      {/* <Route path="/it-software/:topic" element={<ITTopicPage />} /> */}
-      <Route path="/it/react" element={<react/>}/>
       <Route path="/exams/jamb" element={<JAMBPage />} />
       <Route path="/exams/waec" element={<WAECPage />} />
       <Route path="/exams/neco" element={<NECOPage />} />
       <Route path="/courses" element={<Courses />} />
       <Route path="/teach" element={<TeachSection />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Route>
     </Routes>
   );
 };
 
 export default AppRoutes;
-
-
-
-
-
-

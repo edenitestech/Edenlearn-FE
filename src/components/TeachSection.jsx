@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -6,36 +6,109 @@ import { Link } from 'react-router-dom';
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem 0;
   font-family: 'Roboto', sans-serif;
 `;
 
-const Header = styled.header`
-  
-  text-align: center;
+const HeroSlider = styled.section`
+  position: relative;
+  height: 500px;
+  overflow: hidden;
   border-radius: 8px;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 15px #000000;
+
+  @media (max-width: 768px) {
+    height: 400px;
+  }
+
+  @media (max-width: 480px) {
+    height: 300px;
+  }
 `;
 
-const Title = styled.h1`
-  font-size: 3rem;
-  color: var(--head-color);
-  margin-bottom: 1rem;
-  letter-spacing: 0.05rem;
-  font-style: italic;
+const Slide = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: ${props => (props.active ? 1 : 0)};
+  transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-blend-mode: overlay;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+  }
 `;
 
-const Subtitle = styled.p`
-
-  font-size: 1.2rem;
-  line-height: 1.6;
-  color: var(--font-secondary);
+const SlideContent = styled.div`
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
   max-width: 800px;
-  margin: 0 auto;
+`;
+
+const HeroTitle = styled.h1`
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-style: italic;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.4rem;
+  }
+`;
+
+const HeroSubtitle = styled.p`
+  font-size: 1.2rem;
+  color: white;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 
   @media (max-width: 480px) {
     font-size: .85rem;
   }
+`;
+
+const SlideIndicators = styled.div`
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  z-index: 3;
+`;
+
+const Indicator = styled.button`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: ${props => props.active ? 'white' : 'rgba(255,255,255,0.5)'};
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 `;
 
 const Section = styled.section`
@@ -131,6 +204,11 @@ const StepCard = styled.div`
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
+  
+  &:hover{
+    transform: translateY(-5px);
+    cursor: pointer;
+  }
 `;
 
 const StepNumber = styled.div`
@@ -249,9 +327,49 @@ const Footer = styled.footer`
   border-radius: 8px;
 `;
 
+// Slider Images and Content
+const slides = [
+  {
+    id: 1,
+    title: "Share Your Knowledge",
+    text: "Join our community of expert instructors and impact learners worldwide",
+    background: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+  {
+    id: 2,
+    title: "Teach What You Love",
+    text: "Create courses in your area of expertise and build your personal brand",
+    background: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+  {
+    id: 3,
+    title: "Flexible Teaching",
+    text: "Set your own schedule and teach from anywhere in the world",
+    background: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+  {
+    id: 4,
+    title: "Earn While You Teach",
+    text: "Monetize your expertise with our competitive compensation model",
+    background: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+];
+
 // React component
 const TeachWithUs = () => {
   const [formData, setFormData] = useState({ fullName: '', email: '' });
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -266,13 +384,31 @@ const TeachWithUs = () => {
 
   return (
     <Container>
-      <Header>
-        <Title>Teach with Edenites</Title>
-        <Subtitle>
-          Share your knowledge with millions of learners worldwide and join our community of expert instructors.
-          Empower the next generation while building your personal brand and earning income.
-        </Subtitle>
-      </Header>
+      <HeroSlider>
+        {slides.map((slide, index) => (
+          <Slide 
+            key={slide.id}
+            active={index === currentSlide}
+            style={{ backgroundImage: `url(${slide.background})` }}
+          >
+            <SlideContent>
+              <HeroTitle>{slide.title}</HeroTitle>
+              <HeroSubtitle>{slide.text}</HeroSubtitle>
+              <PrimaryButton to="#apply-now">Apply to Teach</PrimaryButton>
+            </SlideContent>
+          </Slide>
+        ))}
+        <SlideIndicators>
+          {slides.map((_, index) => (
+            <Indicator 
+              key={index}
+              active={index === currentSlide}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </SlideIndicators>
+      </HeroSlider>
 
       <Section>
         <SectionTitle>Why Teach With Us?</SectionTitle>
@@ -345,7 +481,7 @@ const TeachWithUs = () => {
         </StepsContainer>
       </Section>
 
-      <Section>
+      <Section id="apply-now">
         <SectionTitle>Ready to Get Started?</SectionTitle>
         <p>Fill out this quick form and we will reach out to you!</p>
         <FormContainer>

@@ -1,5 +1,5 @@
 // src/pages/CareersPage.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -7,20 +7,67 @@ import { Link } from 'react-router-dom';
 const CareersContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem 0;
 `;
 
-const HeroSection = styled.section`
+const HeroSlider = styled.section`
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    height: 400px;
+  }
+
+  @media (max-width: 480px) {
+    height: 300px;
+  }
+`;
+
+const Slide = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: ${props => (props.active ? 1 : 0)};
+  transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 2rem 1rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-blend-mode: overlay;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+  }
+`;
+
+const SlideContent = styled.div`
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 800px;
 `;
 
 const HeroTitle = styled.h1`
   font-size: 3rem;
-  color: var(--head-color);
+  color: white;
   margin-bottom: 1rem;
-  letter-spacing: 0.05rem;
-  font-style: italic;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 
   @media (max-width: 768px) {
     font-size: 2rem;
@@ -33,13 +80,34 @@ const HeroTitle = styled.h1`
 
 const HeroText = styled.p`
   font-size: 1.2rem;
-  color: var(--font-secondary);
+  color: white;
   max-width: 700px;
   margin: 0 auto;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 
   @media (max-width: 480px) {
     font-size: .85rem;
   }
+`;
+
+const SlideIndicators = styled.div`
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  z-index: 3;
+`;
+
+const Indicator = styled.button`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: ${props => props.active ? 'white' : 'rgba(255,255,255,0.5)'};
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 `;
 
 const SectionTitle = styled.h2`
@@ -91,7 +159,6 @@ const CareerCard = styled.div`
     z-index: 1;
   }
 `;
-
 
 const CareerTitle = styled.h3`
   color: var(--head-color);
@@ -179,20 +246,81 @@ const benefits = [
   "Access to all academy courses",
 ];
 
+// Slider Images and Content
+const slides = [
+  {
+    id: 1,
+    title: "Shape the Future of Education",
+    text: "Join our team of passionate educators and industry experts",
+    background: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+  {
+    id: 2,
+    title: "Innovative Learning Environment",
+    text: "Work with cutting-edge technologies and creative teaching methods",
+    background: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+  {
+    id: 3,
+    title: "Grow With Us",
+    text: "Professional development and career advancement opportunities",
+    background: "https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+  {
+    id: 4,
+    title: "Make a Difference",
+    text: "Help students achieve their dreams through quality education",
+    background: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+  },
+];
+
 // Main Component
 const CareersPage = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   return (
     <CareersContainer>
-      <HeroSection>
-        <HeroTitle>Build Your Career at Edenites Academy</HeroTitle>
-        <HeroText>Join our mission to transform education across technology, creative arts, and vocational training.</HeroText>
-      </HeroSection>
+      <HeroSlider>
+        {slides.map((slide, index) => (
+          <Slide 
+            key={slide.id}
+            active={index === currentSlide}
+            style={{ backgroundImage: `url(${slide.background})` }}
+          >
+            <SlideContent>
+              <HeroTitle>{slide.title}</HeroTitle>
+              <HeroText>{slide.text}</HeroText>
+              <ApplyButton to="/careers/apply">Explore Careers</ApplyButton>
+            </SlideContent>
+          </Slide>
+        ))}
+        <SlideIndicators>
+          {slides.map((_, index) => (
+            <Indicator 
+              key={index}
+              active={index === currentSlide}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </SlideIndicators>
+      </HeroSlider>
 
       <SectionTitle>Current Opportunities</SectionTitle>
       <CareerGrid>
         {careerOpportunities.map((job) => (
-          <CareerCard key={job.id}
-          data-aos="zoom-in-up">
+          <CareerCard key={job.id}>
             <CareerTitle>{job.title}</CareerTitle>
             <CareerMeta>
               <span>{job.type}</span>

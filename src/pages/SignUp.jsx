@@ -1,5 +1,109 @@
 import React, { useState } from 'react';
-import '../styles/SignUp.css';
+import { useAuth } from '../context/AuthContext';
+import {
+  AuthContainer,
+  FormHeader,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  AuthButton,
+  ErrorMessage,
+  FormFooter,
+  SwitchFormButton
+} from '../components/AuthStyles';
+import styled from 'styled-components';
+
+const SignUpContainer = styled.div`
+  width: 100%;
+  padding: 1rem;
+`;
+
+const FormProgress = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  position: relative;
+  margin-bottom: .2rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e0e0e0;
+    z-index: 1;
+    transform: translateY(-50%);
+  }
+`;
+
+const ProgressStep = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: ${props => props.active ? 'var(--head-color)' : '#e0e0e0'};
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  color: ${props => props.active ? 'white' : '#666'};
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+  transition: all 0.5s ease;
+  transform: ${props => props.active ? 'scale(1.1)' : 'scale(1)'};
+`;
+
+const FormStep = styled.div`
+  opacity: ${props => props.active ? 1 : 0};
+  height: ${props => props.active ? 'auto' : 0};
+  transform: translateX(${props => props.active ? 0 : '20px'});
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  overflow: hidden;
+`;
+
+const FormNavigation = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: .5rem;
+`;
+
+const NavButton = styled.button`
+  flex: 1;
+  padding: 0.8rem;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: ${props => props.type === 'prev' ? 'var(--font-secondary)' : 'inherit'};
+
+  &:hover {
+    border-color: var(--head-color);
+    color: ${props => props.type === 'prev' ? 'var(--head-color)' : 'inherit'};
+  }
+`;
+
+const FormCheckbox = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+
+  input {
+    margin-right: 0.8rem;
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+const PrivacyAcceptance = styled.label`
+  color: var(--font-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+`;
 
 const SignUp = ({ onSwitch }) => {
   const [step, setStep] = useState(1);
@@ -10,6 +114,9 @@ const SignUp = ({ onSwitch }) => {
     fullname: '',
     acceptedTerms: false
   });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { signup } = useAuth();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,12 +127,16 @@ const SignUp = ({ onSwitch }) => {
   };
 
   const validateStep1 = () => {
-    return (
-      formData.fullname &&
-      formData.password &&
-      formData.confirmPassword &&
-      formData.password === formData.confirmPassword
-    );
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return false;
+    }
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return false;
+    }
+    setError('');
+    return true;
   };
 
   const nextStep = () => {
@@ -37,34 +148,56 @@ const SignUp = ({ onSwitch }) => {
     setStep(step - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (step === 1) {
       nextStep();
       return;
     }
-    if (!formData.acceptedTerms) return;
-    // Handle final submission
-    console.log('Form submitted:', formData);
+    if (!formData.acceptedTerms) {
+      setError('You must accept the terms and conditions');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(''); // Clear previous errors
+    
+    const result = await signup({
+      email: formData.email,
+      password: formData.password,
+      fullname: formData.fullname
+    });
+  
+    setIsLoading(false);
+  
+
+    if (!result.success) {
+      setError(result.error || 'Registration failed. Please try again.');
+      return;
+    }
   };
 
-  return (
-    <div className="signup-form">
-      <div className="form-progress">
-        <div className={`progress-step ${step >= 1 ? 'active' : ''}`}>1</div>
-        <div className={`progress-step ${step >= 2 ? 'active' : ''}`}>2</div>
-      </div>
 
-      {step === 1 && (
-        <div className="form-step active">
-          <div className="form-header">
+
+  return (
+    <SignUpContainer>
+      <FormProgress>
+        <ProgressStep active={step >= 1}>1</ProgressStep>
+        <ProgressStep active={step >= 2}>2</ProgressStep>
+      </FormProgress>
+      
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      
+      <Form onSubmit={handleSubmit}>
+        <FormStep active={step === 1}>
+          <FormHeader>
             <h2>Join Edenites Academy</h2>
             <p>Start your learning journey today</p>
-          </div>
-
-          <div className="form-group">
-            <label>Full Name</label>
-            <input
+          </FormHeader>
+          
+          <FormGroup>
+            <Label>Full Name</Label>
+            <Input
               type="text"
               name="fullname"
               value={formData.fullname}
@@ -72,11 +205,11 @@ const SignUp = ({ onSwitch }) => {
               placeholder="Enter your full name"
               required
             />
-          </div>
-
-          <div className="form-group">
-            <label>Password</label>
-            <input
+          </FormGroup>
+          
+          <FormGroup>
+            <Label>Password</Label>
+            <Input
               type="password"
               name="password"
               value={formData.password}
@@ -85,11 +218,11 @@ const SignUp = ({ onSwitch }) => {
               minLength="8"
               required
             />
-          </div>
-
-          <div className="form-group">
-            <label>Confirm Password</label>
-            <input
+          </FormGroup>
+          
+          <FormGroup>
+            <Label>Confirm Password</Label>
+            <Input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
@@ -97,24 +230,21 @@ const SignUp = ({ onSwitch }) => {
               placeholder="Confirm your password"
               required
             />
-          </div>
-
-          <button
+          </FormGroup>
+          
+          <AuthButton
             type="button"
-            className="auth-button"
             onClick={nextStep}
-            disabled={!validateStep1()}
+            disabled={!formData.fullname || !formData.password || !formData.confirmPassword}
           >
             Next
-          </button>
-        </div>
-      )}
+          </AuthButton>
+        </FormStep>
 
-      {step === 2 && (
-        <div className="form-step active">
-          <div className="form-group">
-            <label>Email Address</label>
-            <input
+        <FormStep active={step === 2}>
+          <FormGroup>
+            <Label>Email Address</Label>
+            <Input
               type="email"
               name="email"
               value={formData.email}
@@ -122,9 +252,9 @@ const SignUp = ({ onSwitch }) => {
               placeholder="eg.gabbytech101@gmail.com"
               required
             />
-          </div>
-
-          <div className="form-checkbox">
+          </FormGroup>
+          
+          <FormCheckbox>
             <input
               type="checkbox"
               name="acceptedTerms"
@@ -132,35 +262,29 @@ const SignUp = ({ onSwitch }) => {
               onChange={handleChange}
               required
             />
-            <label className="privacy-acceptance">
+            <PrivacyAcceptance>
               I accept Edenites Academy's Terms of Use and Privacy Notice
-            </label>
-          </div>
-
-          <div className="form-navigation">
-            <button
-              type="button"
-              className="nav-button prev-btn"
-              onClick={prevStep}
-            >
+            </PrivacyAcceptance>
+          </FormCheckbox>
+          
+          <FormNavigation>
+            <NavButton type="prev" onClick={prevStep}>
               Back
-            </button>
-            <button
+            </NavButton>
+            <AuthButton
               type="submit"
-              className="auth-button"
-              onClick={handleSubmit}
-              disabled={!formData.acceptedTerms}
+              disabled={!formData.acceptedTerms || isLoading}
             >
-              Join for Free
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="form-footer">
-        <p>Already have an account? <button onClick={onSwitch} className="switch-form">Log in</button></p>
-      </div>
-    </div>
+              {isLoading ? 'Creating account...' : 'Join for Free'}
+            </AuthButton>
+          </FormNavigation>
+        </FormStep>
+      </Form>
+      
+      <FormFooter>
+        <p>Already have an account? <SwitchFormButton onClick={onSwitch}>Log in</SwitchFormButton></p>
+      </FormFooter>
+    </SignUpContainer>
   );
 };
 

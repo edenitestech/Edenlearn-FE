@@ -1,33 +1,27 @@
-// AuthWrapper.js
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Login from '../pages/Login';
 import SignUp from '../pages/SignUp';
-import '../styles/AuthWrapper.css';
+import { AuthWrapper as Wrapper, AuthContainer } from './AuthStyles';
 
 const AuthWrapper = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeForm, setActiveForm] = useState('login');
-
-  useEffect(() => {
-    const formParam = searchParams.get('form');
-    setActiveForm(formParam === 'signup' ? 'signup' : 'login');
-  }, [searchParams]);
+  const activeForm = searchParams.get('form') === 'signup' ? 'signup' : 'login';
 
   const switchForm = (formName) => {
     setSearchParams({ form: formName });
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-container">
+    <Wrapper>
+      <AuthContainer>
         {activeForm === 'login' ? (
           <Login onSwitch={() => switchForm('signup')} />
         ) : (
           <SignUp onSwitch={() => switchForm('login')} />
         )}
-      </div>
-    </div>
+      </AuthContainer>
+    </Wrapper>
   );
 };
 

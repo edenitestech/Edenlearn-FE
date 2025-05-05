@@ -11,7 +11,7 @@ const OurProducts = () => {
   useEffect(() => {
     AOS.init({
       duration: 600,
-      once: false,
+      once: true,
       useClassNames: false 
     });
   }, []);
