@@ -70,8 +70,8 @@ const FormNavigation = styled.div`
 `;
 
 const NavButton = styled.button`
-  flex: 1;
-  padding: 0.8rem;
+  width: 48%;
+  padding: 0.8rem .5rem;
   background: none;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -83,7 +83,10 @@ const NavButton = styled.button`
 
   &:hover {
     border-color: var(--head-color);
+    
+    background-color: var(--head-color);
     color: ${props => props.type === 'prev' ? 'var(--head-color)' : 'inherit'};
+    color: var(--font-color);
   }
 `;
 
@@ -162,10 +165,17 @@ const SignUp = ({ onSwitch }) => {
     setIsLoading(true);
     setError(''); // Clear previous errors
     
+    if (!formData.email || !formData.password || !formData.fullname) {
+      setError('All fields are required');
+      setIsLoading(false);
+      return;
+    }
+
     const result = await signup({
       email: formData.email,
       password: formData.password,
-      fullname: formData.fullname
+      fullname: formData.fullname,
+      confirmPassword: formData.confirmPassword 
     });
   
     setIsLoading(false);

@@ -34,10 +34,12 @@
 
 .nav-link:hover {
   color: var(--head-color);
+  transform: translateY(-2px);
+  transition: all .5s ease;
 }
 
 /* Buttons */
-.signup-btn, .login-btn {
+.signup-btn{
   background: var(--head-color);
   color: white;
   padding: 0.5rem 1rem;
@@ -47,8 +49,11 @@
   transition: all 0.3s ease;
 }
 
-.signup-btn:hover, .login-btn:hover {
-  background: var(--hover-green);
+.signup-btn:hover{
+  background: var(--font-color);
+  border: 1px solid var(--head-color);
+  color: var(--head-color);
+  box-shadow: inset 0 -3.25em 0 0 var(--font-color);
   transform: translateY(-1px);
 }
 

@@ -245,6 +245,17 @@ const Input = styled.input`
 const CTAWrapper = styled.div`
   text-align: center;
   margin: 3rem 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
 `;
 
 const PrimaryButton = styled(Link)`
@@ -256,16 +267,22 @@ const PrimaryButton = styled(Link)`
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 0 1rem;
   background: var(--head-color);
   color: var(--font-color);
   border: none;
+  white-space: nowrap; /* Prevents text breaking */
+  margin: 0; /* Remove individual margins */
 
   &:hover {
     transform: translateY(-2px);
     color: var(--primary-green);
     box-shadow: 0.3em 0.3em 0 0 var(--head-color), inset 0.3em 0.3em 0 0 var(--head-color);
     background: var(--bg-default);
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    max-width: 250px;
   }
 `;
 
@@ -278,16 +295,22 @@ const SecondaryButton = styled(Link)`
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 0 1rem;
   background: var(--font-color);
   color: var(--head-color);
   border: 1px solid var(--head-color);
+  white-space: nowrap; /* Prevents text breaking */
+  margin: 0; /* Remove individual margins */
 
   &:hover {
     transform: translateY(-2px);
     background-color: var(--head-color);
     box-shadow: inset 0 -3.25em 0 0 var(--head-color);
     color: var(--font-color);
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    max-width: 250px;
   }
 `;
 

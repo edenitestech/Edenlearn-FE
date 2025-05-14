@@ -13,97 +13,114 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Configure axios instance
+  // Axios instance with updated baseURL and interceptors
   const api = axios.create({
     baseURL: 'https://e-learning-be-3n5m.onrender.com/api',
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: { 'Content-Type': 'application/json' }
   });
 
-  // Add request interceptor for auth token
-  api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  // Attach access token to requests
+  api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        try {
+          const refresh = localStorage.getItem('refreshToken');
+          const { data } = await axios.post(`${api.baseURL}/auth/token/refresh/`, { refresh });
+          localStorage.setItem('accessToken', data.access);
+          originalRequest.headers.Authorization = `Bearer ${data.access}`;
+          return api(originalRequest);
+        } catch (e) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          navigate('/login');
+        }
+      }
+      return Promise.reject(error);
     }
-    return config;
-  });
+  );
 
-  // Check for existing token on initial load
+  // Verify token on initial load
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (token) {
-      verifyToken(token);
+      api.get('/auth/profile/') // Note trailing slash
+        .then(res => setCurrentUser(res.data))
+        .catch(() => {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken'); // Added
+        })
+        .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
   }, []);
 
-  const verifyToken = async (token) => {
-    try {
-      const response = await api.get('/auth/profile');
-      setCurrentUser(response.data);
-    } catch (error) {
-      localStorage.removeItem('token');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Register new user
+  // Updated signup function
   const signup = async (formData) => {
     try {
-      const response = await api.post('/auth/register', {  // Changed from '/auth/signup' to '/auth/register'
+      console.log("Registration payload:", formData); // Debug
+      const { data } = await api.post('/auth/register/', {
+        fullname: formData.fullname,
         email: formData.email,
         password: formData.password,
-        name: formData.fullname
+        confirmPassword: formData.confirmPassword,
+        is_instructor: false
       });
-      
-      // Save user data and token
-      localStorage.setItem('token', response.data.token);
-      setCurrentUser(response.data.user);  // Changed from setUser to setCurrentUser
+      console.log("Registration response:", data); // Debug
+  
+      localStorage.setItem('accessToken', data.access);
+      localStorage.setItem('refreshToken', data.refresh);
+      setCurrentUser(data.user);
       navigate('/dashboard');
       return { success: true };
+  
     } catch (error) {
-      console.error('Signup error:', error.response?.data);
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Registration failed. Please try again.' 
-      };
+      console.error("Full registration error:", error); // Debug
+      const resp = error.response?.data || {};
+      const key = Object.keys(resp)[0];
+      const message = Array.isArray(resp[key]) ? resp[key][0] : resp[key];
+      alert(`Registration failed: ${message}`); // Force UI feedback
+      return { success: false, error: message };
     }
   };
 
-  // Login existing user
-  const login = async (credentials) => {
+  // Updated login function
+  const login = async ({ email, password }) => {
     try {
-      const response = await api.post('/auth/login', {
-        email: credentials.email,
-        password: credentials.password
+      const { data } = await api.post('/auth/login/', { // Trailing slash
+        username: email, // Changed from 'email' to 'username'
+        password
       });
-      
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      setCurrentUser(user);
+
+      localStorage.setItem('accessToken', data.access); // Updated
+      localStorage.setItem('refreshToken', data.refresh); // Added
+      setCurrentUser(data.user);
       navigate('/dashboard');
       return { success: true };
+
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Login failed' 
-      };
+      const message = error.response?.data?.detail || 'Login failed';
+      return { success: false, error: message };
     }
   };
 
-  // Logout user
+  // Updated logout function
   const logout = async () => {
-    try {
-      await api.post('/auth/logout');
-    } finally {
-      localStorage.removeItem('token');
-      setCurrentUser(null);
-      navigate('/login');
+    const refresh = localStorage.getItem('refreshToken');
+    if (refresh) {
+      try {
+        await api.post('/auth/logout/', { refresh }); // Trailing slash
+      } catch (e) {
+        console.warn('Logout token blacklist failed', e);
+      }
     }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setCurrentUser(null);
+    navigate('/login');
   };
 
   const value = {

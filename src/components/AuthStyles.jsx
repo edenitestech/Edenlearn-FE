@@ -68,6 +68,7 @@ export const Input = styled.input`
   font-size: 1rem;
   width: 100%;
   transition: border-color 0.3s;
+  margin-bottom: 1rem;
   
   &:focus {
     outline: none;
@@ -83,9 +84,9 @@ export const AuthButton = styled.button`
   border-radius: 4px;
   font-weight: 600;
   text-decoration: none;
+  width: 48%;
   cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s;
+  transition: background-color .5s;
   
   &:hover:not(:disabled) {
     background: var(--head-color);
