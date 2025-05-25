@@ -101,7 +101,7 @@ export const useFetch = (url, useMockData = false) => {
       title: "Cloud Computing with AWS",
       instructor: "CloudExpert",
       price: 5,
-      image: 'https://picsum.photos/seed/aws/400/300',
+      image: 'image: https://res.cloudinary.com/your-account/image/upload/v123/ux-design.webp',
       category: "Cloud",
       rating: 4.8,
       students: 920
@@ -111,7 +111,7 @@ export const useFetch = (url, useMockData = false) => {
       title: "Mobile App Development",
       instructor: "AppBuilder",
       price: 5,
-      image: 'https://picsum.photos/seed/mobileapp/400/300',
+      image: '../image/Mobile App.png',
       category: "Mobile",
       rating: 4.7,
       students: 780
