@@ -14,6 +14,7 @@ import {
 } from '../components/AuthStyles';
 import styled from 'styled-components';
 
+// Styled Components
 const SignUpContainer = styled.div`
   width: 100%;
   padding: 1rem;
@@ -83,9 +84,7 @@ const NavButton = styled.button`
 
   &:hover {
     border-color: var(--head-color);
-    
     background-color: var(--head-color);
-    color: ${props => props.type === 'prev' ? 'var(--head-color)' : 'inherit'};
     color: var(--font-color);
   }
 `;
@@ -107,6 +106,32 @@ const PrivacyAcceptance = styled.label`
   font-size: 0.9rem;
   font-weight: 600;
 `;
+
+// Client-side validation function
+const validateRegistration = (formData) => {
+  if (!formData.email || !formData.password || !formData.fullname || !formData.confirmPassword) {
+    return { valid: false, error: 'All fields are required' };
+  }
+  
+  if (formData.password !== formData.confirmPassword) {
+    return { valid: false, error: 'Passwords do not match' };
+  }
+  
+  if (formData.password.length < 8) {
+    return { valid: false, error: 'Password must be at least 8 characters' };
+  }
+  
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    return { valid: false, error: 'Invalid email format' };
+  }
+
+  // Password complexity check (optional)
+  if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(formData.password)) {
+    return { valid: false, error: 'Password needs 1 uppercase, 1 lowercase, and 1 number' };
+  }
+  
+  return { valid: true };
+};
 
 const SignUp = ({ onSwitch }) => {
   const [step, setStep] = useState(1);
@@ -153,41 +178,45 @@ const SignUp = ({ onSwitch }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // First validation layer
+    const validation = validateRegistration(formData);
+    if (!validation.valid) {
+      setError(validation.error);
+      return;
+    }
+
     if (step === 1) {
       nextStep();
       return;
     }
+
     if (!formData.acceptedTerms) {
       setError('You must accept the terms and conditions');
       return;
     }
 
     setIsLoading(true);
-    setError(''); // Clear previous errors
+    setError('');
+
+    try {
+      const result = await signup({
+        email: formData.email,
+        password: formData.password,
+        fullname: formData.fullname,
+        confirmPassword: formData.confirmPassword 
+      });
     
-    if (!formData.email || !formData.password || !formData.fullname) {
-      setError('All fields are required');
+      if (!result.success) {
+        setError(result.error || 'Registration failed. Please try again.');
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
       setIsLoading(false);
-      return;
-    }
-
-    const result = await signup({
-      email: formData.email,
-      password: formData.password,
-      fullname: formData.fullname,
-      confirmPassword: formData.confirmPassword 
-    });
-  
-    setIsLoading(false);
-  
-
-    if (!result.success) {
-      setError(result.error || 'Registration failed. Please try again.');
-      return;
     }
   };
-
-
 
   return (
     <SignUpContainer>

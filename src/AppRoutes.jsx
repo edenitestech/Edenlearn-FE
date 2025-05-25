@@ -14,6 +14,8 @@ import NECOPage from './components/NECOPage';
 import ThankYou from './components/ThankYou';
 import InstructorGuidelines from './components/InstructorGuidelines';
 import ITSoftwarePage from './components/ITSoftwarePage';
+import CategoryPage from './components/CategoryPage';
+import CourseDetailPage from './components/CourseDetailPage';
 import FashionDesignPage from './components/FashionPage';
 import LeatherCraftingPage from './components/LeatherCraftingPage';
 import CBTExamsPage from './components/CBTExamsPage';
@@ -36,6 +38,8 @@ const AppRoutes = () => {
         <Route path="admin" element={<AdminDashboard />} />
       </Route>
       <Route path="/it-software" element={<ITSoftwarePage />} />
+      <Route path="/it-software/:categoryId" element={<CategoryPage />} />
+      <Route path="/it-software/:categoryId/:courseId" element={<CourseDetailPage />} />
       <Route path="/fashion-design" element={<FashionDesignPage />} />
       <Route path="/leather-crafting" element={<LeatherCraftingPage />} />
       <Route path="/cbt-exams" element={<CBTExamsPage />} />
@@ -43,6 +47,7 @@ const AppRoutes = () => {
       <Route path="/exams/waec" element={<WAECPage />} />
       <Route path="/exams/neco" element={<NECOPage />} />
       <Route path="/courses" element={<Courses />} />
+      <Route path="/courses/:slug" element={<CourseDetailPage />} />
       <Route path="/teach" element={<TeachSection />} />
 
       <Route element={<ProtectedRoute />}>

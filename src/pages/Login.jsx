@@ -35,16 +35,22 @@ const Login = ({ onSwitch }) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
+// Handling the error message via console
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    const result = await login(formData);
-    
-    if (!result.success) {
-      setError(result.error);
+    try {
+      const result = await login(formData);
+      
+      if (!result.success) {
+        setError(result.error || 'Login failed. Please try again.');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      console.error("Login error:", err);
+    } finally {
       setIsLoading(false);
     }
   };

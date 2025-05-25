@@ -9,13 +9,15 @@ const OurProducts = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Initialize AOS only once (this can be moved to App.js if using globally)
     AOS.init({
       duration: 600,
-      once: true,
-      useClassNames: false 
+      once: true,        // Animations only happen once
+      mirror: false,     // Don't animate elements again when scrolling back up
+      offset: 120,       // Animation starts 120px from bottom of viewport
+      anchorPlacement: 'top-bottom' // Animation starts when top of element hits bottom of viewport
     });
   }, []);
-
 
   const products = [
     {
@@ -49,7 +51,7 @@ const OurProducts = () => {
   };
 
   return (
-    <Section id="our-products" data-aos="fade-up">
+    <Section id="our-products">
       <Container>
         <Title data-aos="fade-down" data-aos-delay="100">
           Our Learning Programs
@@ -62,9 +64,8 @@ const OurProducts = () => {
               role="button"
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && handleCardClick(product.path)}
-              data-aos="zoom-in-up"
-              data-aos-delay={150 * (index + 1)}
-              data-aos-anchor-placement="top-center"
+              data-aos="fade-up"
+              data-aos-delay={100 + (index * 100)} // Staggered delays
             >
               <ProductIcon>{product.icon}</ProductIcon>
               <ProductTitle>{product.title}</ProductTitle>
@@ -77,6 +78,7 @@ const OurProducts = () => {
   );
 };
 
+// Styled components (unchanged from your original)
 const Section = styled.section`
   padding: 2rem 0;
   background-color: var(--bg-light);
@@ -119,12 +121,8 @@ const ProductCard = styled.div`
   cursor: pointer;
   transform: translateZ(0); /* Hardware acceleration */
 
-  &[data-aos] {
-    transition: transform 0.6s ease, opacity 0.6s ease !important;
-  }
-
   &:hover {
-    transform: translateY(-5px) translateZ(0) !important;
+    transform: translateY(-5px) translateZ(0);
     box-shadow: 0 8px 25px #1c233a;
   }
 `;

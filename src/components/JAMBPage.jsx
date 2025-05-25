@@ -416,13 +416,136 @@ const JAMBPage = () => {
     { name: 'Yoruba', topics: 18, duration: '28 hours' },
     { name: 'Hausa', topics: 18, duration: '28 hours' },
     { name: 'Music', topics: 14, duration: '25 hours' },
-    { name: 'Home Economics', topics: 20, duration: '33 hours' },
-    { name: 'Further Mathematics', topics: 20, duration: '33 hours' },
-    { name: 'Computer Science', topics: 22, duration: '33 hours' }
+    { name: 'Home Economics', topics: 20, duration: '18 hours' },
+    { name: 'Further Mathematics', topics: 20, duration: '26 hours' },
+    { name: 'Computer Science', topics: 22, duration: '33 hours' },
+    { name: 'Data Processing', topics: 22, duration: '24 hours' }
   ];
 
   // Practice questions data
-  const allPracticeQuestions = [    
+  const allPracticeQuestions = [  
+    // Further Mathematics
+    {
+      question: "If z = 3 + 4i, what is the modulus of z?",
+      options: ["5", "7", "12", "25"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The derivative of ln(x) is?",
+      options: ["1/x", "x", "e^x", "0"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "What is the integral of e^x dx?",
+      options: ["e^x + C", "ln(x) + C", "x^2/2 + C", "1/x + C"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "If A is a 2×2 matrix with determinant 4, what is det(3A)?",
+      options: ["12", "24", "36", "48"],
+      correctAnswer: 2,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The solution to dy/dx = y is?",
+      options: ["y = Ce^x", "y = Cx", "y = Cx^2", "y = C/x"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "What is the value of i^3 where i = √-1?",
+      options: ["1", "-1", "i", "-i"],
+      correctAnswer: 3,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The partial fraction decomposition of 1/(x^2 - 1) is?",
+      options: ["1/(x-1) - 1/(x+1)", "1/(x+1) - 1/(x-1)", "1/(x-1) + 1/(x+1)", "1/(x-1)^2"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "If a = 2i + 3j and b = 5i - j, what is a·b?",
+      options: ["7", "10", "13", "17"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The general solution to d²y/dx² + y = 0 is?",
+      options: ["y = Ae^x + Be^-x", "y = A sin x + B cos x", "y = Ax + B", "y = A ln x + B"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "What is the Laplace transform of f(t) = t?",
+      options: ["1/s", "1/s^2", "s", "s^2"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The inverse of the matrix [[2,3],[1,2]] is?",
+      options: ["[[2,-3],[-1,2]]", "[[-2,3],[1,-2]]", "[[2,3],[1,2]]", "[[1,0],[0,1]]"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The polar form of the complex number 1 + i is?",
+      options: ["√2(cos π/4 + i sin π/4)", "2(cos π/4 + i sin π/4)", "√2(cos π/2 + i sin π/2)", "2(cos π/2 + i sin π/2)"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "What is the value of ∫(0 to π/2) sin x dx?",
+      options: ["0", "1", "π/2", "π"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The solution set of |2x - 3| < 5 is?",
+      options: ["x < 4", "x > -1", "-1 < x < 4", "x < -1 or x > 4"],
+      correctAnswer: 2,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "If z = 2(cos 60° + i sin 60°), what is z^3?",
+      options: ["8i", "8", "-8i", "-8"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The derivative of sin(2x) is?",
+      options: ["2 cos(2x)", "cos(2x)", "-2 cos(2x)", "-cos(2x)"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "What is the rank of the matrix [[1,2],[2,4]]?",
+      options: ["0", "1", "2", "3"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The solution to the differential equation dy/dx = x/y is?",
+      options: ["y = Ce^x", "y^2 = x^2 + C", "y = Cx", "y = C/x"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "The value of lim(x→0) (sin x)/x is?",
+      options: ["0", "1", "∞", "Undefined"],
+      correctAnswer: 1,
+      subject: "Further Mathematics"
+    },
+    {
+      question: "If A and B are mutually exclusive events, P(A∪B) = ?",
+      options: ["P(A) + P(B)", "P(A) × P(B)", "P(A) - P(B)", "P(A)/P(B)"],
+      correctAnswer: 0,
+      subject: "Further Mathematics"
+    },
+    
     // Economics questions
     {
       question: "Demand curve usually slopes?",
@@ -824,6 +947,128 @@ const JAMBPage = () => {
       options: ["Jude", "Revelation", "Malachi", "Acts"],
       correctAnswer: 1,
       subject: "CRK"
+    },
+
+    // Islamic Religious Studies
+    {
+      question: "How many pillars of Islam are there?",
+      options: ["4", "5", "6", "7"],
+      correctAnswer: 1,
+      subject: "IRS"
+    },
+    {
+      question: "The first Khalifah after Prophet Muhammad (SAW) was?",
+      options: ["Umar ibn Khattab", "Ali ibn Abi Talib", "Abu Bakr", "Uthman ibn Affan"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "Which Surah is called the 'Heart of the Quran'?",
+      options: ["Al-Fatihah", "Al-Baqarah", "Yasin", "Al-Ikhlas"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "The angel who delivers revelation is?",
+      options: ["Mikail", "Israfil", "Jibril", "Izrail"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "The first wife of Prophet Muhammad (SAW) was?",
+      options: ["Aisha", "Khadijah", "Hafsah", "Sawdah"],
+      correctAnswer: 1,
+      subject: "IRS"
+    },
+    {
+      question: "Which of these is NOT among the rightly guided Caliphs?",
+      options: ["Abu Bakr", "Umar", "Ali", "Muawiyah"],
+      correctAnswer: 3,
+      subject: "IRS"
+    },
+    {
+      question: "The migration of Prophet Muhammad (SAW) from Mecca to Medina is called?",
+      options: ["Hajj", "Hijrah", "Jihad", "Umrah"],
+      correctAnswer: 1,
+      subject: "IRS"
+    },
+    {
+      question: "The first revealed verse of the Quran begins with?",
+      options: ["Bismillah", "Iqra", "Alhamdulillah", "La ilaha"],
+      correctAnswer: 1,
+      subject: "IRS"
+    },
+    {
+      question: "Which of these is NOT a name of the Quran?",
+      options: ["Al-Huda", "Al-Furqan", "Al-Kitab", "Al-Hadith"],
+      correctAnswer: 3,
+      subject: "IRS"
+    },
+    {
+      question: "The prayer performed during eclipse is called?",
+      options: ["Tahajjud", "Salatul Istisqa", "Salatul Khusuf", "Salatul Janazah"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "The Islamic month of fasting is?",
+      options: ["Muharram", "Rajab", "Ramadan", "Shawwal"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "Which of these is NOT among the articles of faith?",
+      options: ["Belief in Allah", "Belief in Angels", "Belief in Books", "Belief in Imams"],
+      correctAnswer: 3,
+      subject: "IRS"
+    },
+    {
+      question: "The Battle of Badr occurred in which year after Hijrah?",
+      options: ["1st", "2nd", "3rd", "4th"],
+      correctAnswer: 1,
+      subject: "IRS"
+    },
+    {
+      question: "The first martyr in Islam was?",
+      options: ["Sumayyah", "Bilal", "Hamzah", "Ali"],
+      correctAnswer: 0,
+      subject: "IRS"
+    },
+    {
+      question: "The longest Surah in the Quran is?",
+      options: ["Al-Baqarah", "Al-Imran", "An-Nisa", "Al-Maidah"],
+      correctAnswer: 0,
+      subject: "IRS"
+    },
+    {
+      question: "The Islamic system of inheritance is called?",
+      options: ["Zakat", "Sadaqah", "Mirath", "Waqf"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "Which of these is NOT a type of Tawheed?",
+      options: ["Tawheed Rububiyyah", "Tawheed Uluhiyyah", "Tawheed Asma was-Sifat", "Tawheed Ibadah"],
+      correctAnswer: 3,
+      subject: "IRS"
+    },
+    {
+      question: "The first Mu'azzin in Islam was?",
+      options: ["Abu Bakr", "Umar", "Bilal", "Ali"],
+      correctAnswer: 2,
+      subject: "IRS"
+    },
+    {
+      question: "The Day of Judgment is also known as?",
+      options: ["Yaumul Qiyamah", "Yaumul Jumu'ah", "Yaumul Arafah", "Yaumul Mubahalah"],
+      correctAnswer: 0,
+      subject: "IRS"
+    },
+    {
+      question: "Which of these is NOT among the revealed books?",
+      options: ["Tawrah", "Injil", "Zabur", "Hadith"],
+      correctAnswer: 3,
+      subject: "IRS"
     },
     
     // Physics questions
@@ -1597,6 +1842,250 @@ const JAMBPage = () => {
       options: ["Debenture", "Share certificate", "Bill of exchange", "Invoice"],
       correctAnswer: 1,
       subject: "Commerce"
+    },
+
+    // Computer Science
+    {
+      question: "Which of these is NOT a programming language?",
+      options: ["Python", "Java", "HTML", "Microsoft"],
+      correctAnswer: 3,
+      subject: "Computer Science"
+    },
+    {
+      question: "The brain of the computer is called?",
+      options: ["RAM", "ROM", "CPU", "GPU"],
+      correctAnswer: 2,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which generation of computers used transistors?",
+      options: ["First", "Second", "Third", "Fourth"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "The binary equivalent of decimal 10 is?",
+      options: ["1010", "1001", "1100", "1111"],
+      correctAnswer: 0,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is an example of application software?",
+      options: ["Windows", "Linux", "Microsoft Word", "Android"],
+      correctAnswer: 2,
+      subject: "Computer Science"
+    },
+    {
+      question: "The temporary storage area in CPU is called?",
+      options: ["Hard disk", "Cache", "USB", "CD-ROM"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is NOT a network topology?",
+      options: ["Star", "Bus", "Ring", "Square"],
+      correctAnswer: 3,
+      subject: "Computer Science"
+    },
+    {
+      question: "The protocol used for web pages is?",
+      options: ["FTP", "HTTP", "SMTP", "TCP"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is a database management system?",
+      options: ["Excel", "MySQL", "Word", "PowerPoint"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "The process of finding and fixing errors in programs is called?",
+      options: ["Compiling", "Debugging", "Executing", "Interpreting"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is NOT a type of computer memory?",
+      options: ["RAM", "ROM", "CPU", "Cache"],
+      correctAnswer: 2,
+      subject: "Computer Science"
+    },
+    {
+      question: "The inventor of the World Wide Web is?",
+      options: ["Bill Gates", "Tim Berners-Lee", "Steve Jobs", "Mark Zuckerberg"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is an example of an operating system?",
+      options: ["Google Chrome", "Microsoft Excel", "Windows 10", "Adobe Photoshop"],
+      correctAnswer: 2,
+      subject: "Computer Science"
+    },
+    {
+      question: "The number system with base 16 is called?",
+      options: ["Binary", "Decimal", "Octal", "Hexadecimal"],
+      correctAnswer: 3,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is NOT a computer input device?",
+      options: ["Keyboard", "Mouse", "Printer", "Scanner"],
+      correctAnswer: 2,
+      subject: "Computer Science"
+    },
+    {
+      question: "The process of converting high-level language to machine language is called?",
+      options: ["Debugging", "Compiling", "Executing", "Interpreting"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is a volatile memory?",
+      options: ["ROM", "RAM", "Hard disk", "Flash drive"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "The smallest unit of data in computer is?",
+      options: ["Byte", "Bit", "Nibble", "Kilobyte"],
+      correctAnswer: 1,
+      subject: "Computer Science"
+    },
+    {
+      question: "Which of these is NOT a type of computer virus?",
+      options: ["Trojan", "Worm", "Spyware", "Mouse"],
+      correctAnswer: 3,
+      subject: "Computer Science"
+    },
+    {
+      question: "The full meaning of URL is?",
+      options: ["Uniform Resource Locator", "Universal Resource Link", "Uniform Resource Link", "Universal Resource Locator"],
+      correctAnswer: 0,
+      subject: "Computer Science"
+    },
+
+    // Data Processing
+    {
+      question: "The first stage of data processing is?",
+      options: ["Input", "Output", "Processing", "Storage"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is NOT a data type?",
+      options: ["Integer", "String", "Boolean", "Loop"],
+      correctAnswer: 3,
+      subject: "Data Processing"
+    },
+    {
+      question: "The arrangement of data in a particular order is called?",
+      options: ["Searching", "Sorting", "Merging", "Filtering"],
+      correctAnswer: 1,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is an example of analog data?",
+      options: ["Digital clock", "Thermometer", "Computer", "Smartphone"],
+      correctAnswer: 1,
+      subject: "Data Processing"
+    },
+    {
+      question: "The process of checking data for accuracy is called?",
+      options: ["Verification", "Validation", "Compilation", "Interpretation"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is NOT a method of data collection?",
+      options: ["Interview", "Questionnaire", "Observation", "Programming"],
+      correctAnswer: 3,
+      subject: "Data Processing"
+    },
+    {
+      question: "The rectangular area in Excel where data is entered is called?",
+      options: ["Cell", "Row", "Column", "Sheet"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is a database model?",
+      options: ["Hierarchical", "Vertical", "Circular", "Parallel"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "The process of extracting useful information from data is called?",
+      options: ["Data mining", "Data processing", "Data collection", "Data verification"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is NOT a stage in data processing cycle?",
+      options: ["Collection", "Input", "Manufacturing", "Output"],
+      correctAnswer: 2,
+      subject: "Data Processing"
+    },
+    {
+      question: "The type of data that represents categories is called?",
+      options: ["Numerical", "Categorical", "Ordinal", "Interval"],
+      correctAnswer: 1,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is an example of DBMS software?",
+      options: ["MS Word", "MS Excel", "MS Access", "MS PowerPoint"],
+      correctAnswer: 2,
+      subject: "Data Processing"
+    },
+    {
+      question: "The process of removing errors from data is called?",
+      options: ["Data cleaning", "Data sorting", "Data merging", "Data collection"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is NOT a data processing method?",
+      options: ["Manual", "Mechanical", "Electronic", "Abstract"],
+      correctAnswer: 3,
+      subject: "Data Processing"
+    },
+    {
+      question: "The process of converting raw data into meaningful information is called?",
+      options: ["Data collection", "Data processing", "Data analysis", "Data presentation"],
+      correctAnswer: 1,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is a data storage device?",
+      options: ["Keyboard", "Monitor", "Hard disk", "Mouse"],
+      correctAnswer: 2,
+      subject: "Data Processing"
+    },
+    {
+      question: "The type of data that can be counted is called?",
+      options: ["Qualitative", "Quantitative", "Primary", "Secondary"],
+      correctAnswer: 1,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is NOT a data presentation tool?",
+      options: ["Charts", "Graphs", "Tables", "Algorithms"],
+      correctAnswer: 3,
+      subject: "Data Processing"
+    },
+    {
+      question: "The process of organizing data into tables is called?",
+      options: ["Tabulation", "Classification", "Verification", "Validation"],
+      correctAnswer: 0,
+      subject: "Data Processing"
+    },
+    {
+      question: "Which of these is a characteristic of good information?",
+      options: ["Accuracy", "Complexity", "Subjectivity", "Ambiguity"],
+      correctAnswer: 0,
+      subject: "Data Processing"
     },
 
     // Accounting Questions

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const TopCourses = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -24,7 +25,8 @@ const TopCourses = () => {
       students: 1200,
       price: 5,
       image: '../image/AWS.png',
-      isTrending: true
+      isTrending: true,
+      slug: 'aws-certified-solutions-architect'
     },
     {
       id: 2,
@@ -35,7 +37,8 @@ const TopCourses = () => {
       students: 850,
       price: 5,
       image: '../image/React pic.webp',
-      isTrending: true
+      isTrending: true,
+      slug: 'react-js-masterclass'
     },
     {
       id: 3,
@@ -46,7 +49,8 @@ const TopCourses = () => {
       students: 1500,
       price: 5,
       image: '../image/Data Science.webp',
-      isTrending: true
+      isTrending: true,
+      slug: 'data-science-fundamentals'
     },
     {
       id: 4,
@@ -57,7 +61,9 @@ const TopCourses = () => {
       students: 450,
       price: 5,
       image: '../image/Leather Crafting.png',
-      isTrending: true
+      isTrending: true,
+      slug: 'leather-crafting-basics'
+
     },
     {
       id: 5,
@@ -68,7 +74,8 @@ const TopCourses = () => {
       students: 380,
       price: 5,
       image: '../image/Python.webp',
-      isTrending: true
+      isTrending: true,
+      slug: 'fashion-pattern-making'
     },
     {
       id: 6,
@@ -79,7 +86,8 @@ const TopCourses = () => {
       students: 2100,
       price: 5,
       image: '../image/Jamb prep.png',
-      isTrending: true
+      isTrending: true,
+      slug: 'jamb-complete-prep'
     },
     // New course 1
     {
@@ -91,7 +99,8 @@ const TopCourses = () => {
       students: 1800,
       price: 5,
       image: '../image/Python.webp',
-      isTrending: true
+      isTrending: true,
+      slug: 'python-programming-bootcamp'
     },
     // New course 2
     {
@@ -103,10 +112,16 @@ const TopCourses = () => {
       students: 950,
       price: 5,
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZGlnaXRhbCUyMG1hcmtldGluZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-      isTrending: true
+      isTrending: true,
+      slug: 'digital-marketing-mastery'
     }
   ];
 
+   const handleEnrollClick = (courseSlug) => {
+    // Navigate to the course enrollment page
+    navigate(`/courses/${courseSlug}`);
+    // Alternatively, you could open a modal or trigger a signup flow
+  }
   return (
     <TopCoursesSection data-aos="fade-up">
       <Container>
@@ -155,6 +170,7 @@ const TopCourses = () => {
                 <EnrollButton
                   data-aos="fade-up"
                   data-aos-delay="200"
+                  onClick={() => handleEnrollClick(course.slug)}
                 >
                   Enroll Now
                 </EnrollButton>

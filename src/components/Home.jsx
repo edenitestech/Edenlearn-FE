@@ -10,10 +10,6 @@ import FAQs from './FAQs';
 import OurProducts from './OurProduct';
 
 
-
-
-
-
 const Home = () => {
   return (
     <div>

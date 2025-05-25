@@ -157,15 +157,26 @@ const CTAButton = styled(Link)`
   }
 `;
 
-const HeroSection = () => {
+  const HeroSection = () => {
   useEffect(() => {
     AOS.init({
       duration: 800,
       easing: 'ease-out-quart',
-      once: true, // Animations only happen once
-      mirror: false
+      once: true,        // Ensures animation only happens once
+      mirror: false,     // Prevents re-animating when scrolling back up
+      offset: 120,       // Adjust when animation triggers (px from bottom of viewport)
+      anchorPlacement: 'top-bottom' // Animation starts when top of element hits bottom of viewport
     });
+    
+    // Add this to handle potential mobile issues
+    const handleResize = () => {
+      AOS.refresh();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
   return (
     <HeroSectionWrapper>
       <HeroContent>
@@ -181,7 +192,7 @@ const HeroSection = () => {
           >Explore. | Learn. | Succeed.</Heading2>
           <Paragraph 
             data-aos="fade-up" 
-            data-aos-delay="500"
+            data-aos-delay="400"
           >Explore our courses and start learning today!</Paragraph>
           <HeroCTA>
             <CTAButton
