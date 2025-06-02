@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import {
-  AuthContainer,
   FormHeader,
   Form,
   FormGroup,
@@ -12,7 +12,7 @@ import {
   FormFooter,
   SwitchFormButton
 } from '../components/AuthStyles';
-import styled from 'styled-components';
+
 
 // Styled Components
 const SignUpContainer = styled.div`
@@ -144,7 +144,7 @@ const SignUp = ({ onSwitch }) => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signup } = useAuth();
+  const { signUp } = useAuth();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -200,11 +200,13 @@ const SignUp = ({ onSwitch }) => {
     setError('');
 
     try {
-      const result = await signup({
+      const result = await signUp({
         email: formData.email,
         password: formData.password,
         fullname: formData.fullname,
-        confirmPassword: formData.confirmPassword 
+        confirmPassword: formData.confirmPassword, 
+
+        // is_instructor: false
       });
     
       if (!result.success) {

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from './AxiosService';
 
 const AuthContext = createContext();
 
@@ -13,47 +13,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Axios instance with updated baseURL and interceptors
-  const api = axios.create({
-    baseURL: 'https://e-learning-be-3n5m.onrender.com/api',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    withCredentials: true // If using cookies
-  });
+  // Some React Rules:
+  // Never modify the State manually
+  // Never mutate the State 
+  // State can only be changed with its own set function
 
-  // API debugging added
-  api.interceptors.request.use(config => {
-    console.log('Request:', config);
-    return config;
-  }, error => {
-    console.log('Request error:', error);
-    return Promise.reject(error);
-  });
-
-  // Attach access token to requests
-  api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-        try {
-          const refresh = localStorage.getItem('refreshToken');
-          const { data } = await axios.post(`${api.baseURL}/auth/token/refresh/`, { refresh });
-          localStorage.setItem('accessToken', data.access);
-          originalRequest.headers.Authorization = `Bearer ${data.access}`;
-          return api(originalRequest);
-        } catch (e) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          navigate('/login');
-        }
-      }
-      return Promise.reject(error);
-    }
-  );
+  // Take cognizance of the dependency array always used in the useEffect, i.e []
+  // Take cognizance also of the use of components, states, props and hooks.
 
   // Verify token on initial load
     useEffect(() => {
@@ -63,7 +29,7 @@ export function AuthProvider({ children }) {
           .then(res => setCurrentUser(res.data))
           .catch(() => {
             localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken'); // Added
+            localStorage.removeItem('refreshToken'); 
           })
           .finally(() => setLoading(false));
       } else {
@@ -71,20 +37,23 @@ export function AuthProvider({ children }) {
       }
     }, []);
 
-    // Updated signup function
-  const signup = async (formData) => {
+  
+
+  // Updated signup function
+  const signUp = async (formData) => {
     if (!formData.email || !formData.password || !formData.fullname) {
       return { success: false, error: 'Missing required fields' };
     }
     try {
       console.log("Registration payload:", formData);
-      const { data } = await api.post('/auth/register/', {
-        fullname: formData.fullname,
-        email: formData.email,
-        password: formData.password,
-        confirm_password: formData.confirmPassword,
-        is_instructor: false
-      });
+      const { data } = await api.post('/auth/register', formData 
+        // fullname: formData.fullname,
+        // email: formData.email,
+        // password: formData.password,
+        // confirm_password: formData.confirmPassword,
+        // is_instructor: false
+        // formData
+      );
       console.log("Registration response:", data);
 
       if (!data.access || !data.refresh) {
@@ -132,7 +101,10 @@ export function AuthProvider({ children }) {
         error: errorMessage || 'Unknown error occurred during registration' 
       };
     }
+        
   };
+
+  
 
   // Updated login function
   const login = async ({ email, password }) => {
@@ -186,11 +158,11 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
     navigate('/login');
   };
-
+  // To create the value object AFTER all functions are defined
   const value = {
     currentUser,
     loading,
-    signup,
+    signUp,
     login,
     logout
   };

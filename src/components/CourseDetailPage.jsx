@@ -31,7 +31,7 @@ const CourseDetailPage = () => {
         'Cost Optimization'
       ],
       prerequisites: ['Basic cloud computing knowledge'],
-      image: '../image/AWS.png'
+      image: '../image.AWS.png'
     },
     'react-js-masterclass': {
       id: 'react',
@@ -72,7 +72,7 @@ const CourseDetailPage = () => {
         'Accessibility'
       ],
       prerequisites: [],
-      image: '../image/WebDev.png'
+      image: '../image/AWS.png'
     },
     'javascript': {
       id: 'javascript',
