@@ -124,7 +124,7 @@ const CourseDetailPage = () => {
       }
       setLoading(false);
     }, 500);
-  }, [slug, categoryId, courseId, navigate]);
+  }, [slug, categoryId, courseId, navigate, allCourses]);
 
   if (loading) {
     return <LoadingContainer>Loading course details...</LoadingContainer>;
