@@ -1,16 +1,18 @@
+// src/components/CourseDetailPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaArrowLeft, FaStar, FaUsers, FaClock, FaBook, FaCertificate } from 'react-icons/fa';
 
 const CourseDetailPage = () => {
-  const { slug } = useParams(); // For trending courses
+  const { slug } = useParams();         // For trending courses
   const { categoryId, courseId } = useParams(); // For IT software courses
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Mock data - in a real app, you would fetch this from an API
+  // Mock data – in a real app, you would fetch this from an API
   const allCourses = {
     // Trending courses
     'aws-certified-solutions-architect': {
@@ -96,12 +98,16 @@ const CourseDetailPage = () => {
     }
   };
 
+  // ────────────────────────────────────────────────────────────────────────────
+  // We want this effect to run when slug/categoryId/courseId/navigate changes,
+  // but ESLint will warn that “allCourses” is used inside. To silence that warning,
+  // we add the disable comment here:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // Simulate API fetch
     setLoading(true);
     setTimeout(() => {
       let courseData;
-      
+
       if (slug) {
         // Handle trending courses
         courseData = allCourses[slug];
@@ -109,11 +115,11 @@ const CourseDetailPage = () => {
         // Handle IT software courses
         courseData = allCourses[courseId];
       }
-      
+
       if (courseData) {
         setCourse(courseData);
       } else {
-        // Course not found - redirect or show error
+        // Course not found – redirect or show error
         navigate('/courses');
       }
       setLoading(false);
