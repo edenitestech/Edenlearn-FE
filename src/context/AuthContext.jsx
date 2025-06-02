@@ -1,3 +1,5 @@
+// AuthContext.jsx
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from './AxiosService';
@@ -13,144 +15,149 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Some React Rules:
-  // Never modify the State manually
-  // Never mutate the State 
-  // State can only be changed with its own set function
-
-  // Take cognizance of the dependency array always used in the useEffect, i.e []
-  // Take cognizance also of the use of components, states, props and hooks.
-
-  // Verify token on initial load
-    useEffect(() => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        api.get('/auth/profile/') // Note trailing slash
-          .then(res => setCurrentUser(res.data))
-          .catch(() => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken'); 
-          })
-          .finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    }, []);
-
-  
-
-  // Updated signup function
-  const signUp = async (formData) => {
-    if (!formData.email || !formData.password || !formData.fullname) {
-      return { success: false, error: 'Missing required fields' };
+  // On mount, if we already have an accessToken, fetch /auth/profile/ to confirm it:
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      api
+        .get('/auth/profile/')   // << Must include trailing slash
+        .then((res) => {
+          setCurrentUser(res.data);
+        })
+        .catch(() => {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
-    try {
-      console.log("Registration payload:", formData);
-      const { data } = await api.post('/auth/register', formData 
-        // fullname: formData.fullname,
-        // email: formData.email,
-        // password: formData.password,
-        // confirm_password: formData.confirmPassword,
-        // is_instructor: false
-        // formData
-      );
-      console.log("Registration response:", data);
+  }, []);
 
+  // ─── SIGN UP ──────────────────────────────────────────────────────────────
+  const signUp = async ({ email, password, confirmPassword, fullname }) => {
+    if (!email || !password || !confirmPassword || !fullname) {
+      return { success: false, error: 'Missing required fields.' };
+    }
+
+    try {
+      console.log('Registration payload:', { email, password, confirmPassword, fullname });
+
+      // We must hit "/auth/register/" (note trailing slash) and send EXACTLY the fields DRF expects:
+      const { data } = await api.post('/auth/register/', {
+        fullname,             // matches RegisterSerializer.fullname
+        email,                // matches RegisterSerializer.email
+        password,             // matches RegisterSerializer.password
+        confirmPassword,      // matches RegisterSerializer.confirmPassword
+        is_instructor: false  // optional; defaults to false
+      });
+
+      console.log('Registration response:', data);
+
+      // Expecting backend to return { user: {...}, access: "...", refresh: "..." }
       if (!data.access || !data.refresh) {
-        throw new Error("Registration successful but missing tokens");
+        throw new Error('Registration succeeded but no tokens returned');
       }
 
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
-      setCurrentUser(data.user || { email: formData.email, name: formData.fullname });
+      setCurrentUser(data.user);
       navigate('/dashboard');
       return { success: true };
-
     } catch (error) {
-      console.error("Full registration error:", {
+      console.error('Full registration error:', {
         message: error.message,
         response: error.response?.data,
         status: error.response?.status,
         headers: error.response?.headers,
-        config: error.config
+        config: error.config,
       });
 
-      let errorMessage = 'Registration failed';
-      if (error.response) {
-        // Try to extract more detailed error information
-        if (error.response.data) {
-          // For Django REST framework errors
-          if (error.response.data.detail) {
-            errorMessage = error.response.data.detail;
-          } 
-          // For validation errors
-          else if (typeof error.response.data === 'object') {
-            errorMessage = Object.entries(error.response.data)
-              .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
-              .join('; ');
-          }
-          // For string errors
-          else if (typeof error.response.data === 'string') {
-            errorMessage = error.response.data;
-          }
+      // Build a friendly message from DRF’s error payload:
+      let errorMessage = 'Registration failed.';
+      if (error.response?.data) {
+        const respData = error.response.data;
+        if (respData.detail) {
+          errorMessage = respData.detail;
+        } else if (typeof respData === 'object') {
+          // e.g. { email: ["…"], password: ["…"] }
+          errorMessage = Object.entries(respData)
+            .map(([key, val]) => {
+              const msg = Array.isArray(val) ? val.join(', ') : val;
+              return `${key}: ${msg}`;
+            })
+            .join(' · ');
+        } else if (typeof respData === 'string') {
+          errorMessage = respData;
         }
       }
 
-      return { 
-        success: false, 
-        error: errorMessage || 'Unknown error occurred during registration' 
-      };
+      return { success: false, error: errorMessage };
     }
-        
   };
 
-  
-
-  // Updated login function
+  // ─── LOG IN ────────────────────────────────────────────────────────────────
   const login = async ({ email, password }) => {
-    try {
-      console.log("Login attempt with:", { email, password }); // Debug
-      const { data } = await api.post('/auth/login/', {
-        email, // Changed back to email if your backend expects email
-        password
-      });
+    if (!email || !password) {
+      return { success: false, error: 'Email & password are required.' };
+    }
 
-      console.log("Login response:", data); // Debug
+    try {
+      console.log('Login attempt with:', { email, password });
+
+      // Must post to "/auth/login/" with body { email, password } because MyTokenObtainPairSerializer will read "email"
+      const { data } = await api.post('/auth/login/', { email, password });
+
+      console.log('Login response:', data);
 
       if (!data.access || !data.refresh) {
-        throw new Error("Invalid response from server - missing tokens");
+        throw new Error('Login succeeded but no tokens returned');
       }
 
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
-      setCurrentUser(data.user || { email }); // Fallback if user data not returned
+
+      // Our backend does not return "user" here (only tokens), so fetch profile immediately:
+      const profileResp = await api.get('/auth/profile/');
+      setCurrentUser(profileResp.data);
+
       navigate('/dashboard');
       return { success: true };
-
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message); // Debug
-      let message = 'Login failed';
-      
-      if (error.response) {
-        // Handle different error response formats
-        message = error.response.data?.detail || 
-                  error.response.data?.message || 
-                  (typeof error.response.data === 'string' ? error.response.data : 
-                  JSON.stringify(error.response.data));
+      console.error('Login error:', error.response?.data || error.message);
+
+      let message = 'Login failed.';
+      if (error.response?.data) {
+        const respData = error.response.data;
+        if (respData.detail) {
+          message = respData.detail;
+        } else if (typeof respData === 'object') {
+          message = Object.entries(respData)
+            .map(([key, val]) => {
+              const msg = Array.isArray(val) ? val.join(', ') : val;
+              return `${key}: ${msg}`;
+            })
+            .join(' · ');
+        } else if (typeof respData === 'string') {
+          message = respData;
+        }
       }
-      
       return { success: false, error: message };
     }
   };
 
-  // Updated logout function
+  // ─── LOG OUT ───────────────────────────────────────────────────────────────
   const logout = async () => {
-    const refresh = localStorage.getItem('refreshToken');
-    if (refresh) {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
       try {
-        await api.post('/auth/logout/', { refresh }); // Trailing slash
-      } catch (e) {
-        console.warn('Logout token blacklist failed', e);
+        // Hit "/auth/logout/" with { refresh: <token> }
+        await api.post('/auth/logout/', { refresh: refreshToken });
+      } catch (err) {
+        console.warn('Logout blacklist failed:', err);
+        // even if it fails, we continue to remove tokens
       }
     }
     localStorage.removeItem('accessToken');
@@ -158,13 +165,13 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
     navigate('/login');
   };
-  // To create the value object AFTER all functions are defined
+
   const value = {
     currentUser,
     loading,
     signUp,
     login,
-    logout
+    logout,
   };
 
   return (
