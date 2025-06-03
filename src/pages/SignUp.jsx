@@ -1,3 +1,5 @@
+// SignUp.jsx
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
@@ -10,11 +12,10 @@ import {
   AuthButton,
   ErrorMessage,
   FormFooter,
-  SwitchFormButton
+  SwitchFormButton,
 } from '../components/AuthStyles';
 
-
-// Styled Components
+// Styled Components (unchanged)…
 const SignUpContainer = styled.div`
   width: 100%;
   padding: 1rem;
@@ -25,7 +26,7 @@ const FormProgress = styled.div`
   justify-content: center;
   gap: 5rem;
   position: relative;
-  margin-bottom: .2rem;
+  margin-bottom: 0.2rem;
 
   &::before {
     content: '';
@@ -44,22 +45,22 @@ const ProgressStep = styled.div`
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: ${props => props.active ? 'var(--head-color)' : '#e0e0e0'};
+  background: ${(props) => (props.active ? 'var(--head-color)' : '#e0e0e0')};
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  color: ${props => props.active ? 'white' : '#666'};
+  color: ${(props) => (props.active ? 'white' : '#666')};
   font-weight: 600;
   position: relative;
   z-index: 2;
   transition: all 0.5s ease;
-  transform: ${props => props.active ? 'scale(1.1)' : 'scale(1)'};
+  transform: ${(props) => (props.active ? 'scale(1.1)' : 'scale(1)')};
 `;
 
 const FormStep = styled.div`
-  opacity: ${props => props.active ? 1 : 0};
-  height: ${props => props.active ? 'auto' : 0};
-  transform: translateX(${props => props.active ? 0 : '20px'});
+  opacity: ${(props) => (props.active ? 1 : 0)};
+  height: ${(props) => (props.active ? 'auto' : 0)};
+  transform: translateX(${(props) => (props.active ? 0 : '20px')});
   transition: opacity 0.5s ease, transform 0.5s ease;
   overflow: hidden;
 `;
@@ -67,12 +68,12 @@ const FormStep = styled.div`
 const FormNavigation = styled.div`
   display: flex;
   gap: 1rem;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 `;
 
 const NavButton = styled.button`
   width: 48%;
-  padding: 0.8rem .5rem;
+  padding: 0.8rem 0.5rem;
   background: none;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -80,7 +81,7 @@ const NavButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  color: ${props => props.type === 'prev' ? 'var(--font-secondary)' : 'inherit'};
+  color: ${(props) => (props.type === 'prev' ? 'var(--font-secondary)' : 'inherit')};
 
   &:hover {
     border-color: var(--head-color);
@@ -107,29 +108,20 @@ const PrivacyAcceptance = styled.label`
   font-weight: 600;
 `;
 
-// Client-side validation function
+// Client‐side validation:
 const validateRegistration = (formData) => {
   if (!formData.email || !formData.password || !formData.fullname || !formData.confirmPassword) {
-    return { valid: false, error: 'All fields are required' };
+    return { valid: false, error: 'All fields are required.' };
   }
-  
   if (formData.password !== formData.confirmPassword) {
-    return { valid: false, error: 'Passwords do not match' };
+    return { valid: false, error: 'Passwords do not match.' };
   }
-  
   if (formData.password.length < 8) {
-    return { valid: false, error: 'Password must be at least 8 characters' };
+    return { valid: false, error: 'Password must be at least 8 characters.' };
   }
-  
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-    return { valid: false, error: 'Invalid email format' };
+    return { valid: false, error: 'Invalid email format.' };
   }
-
-  // Password complexity check (optional)
-  if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(formData.password)) {
-    return { valid: false, error: 'Password needs 1 uppercase, 1 lowercase, and 1 number' };
-  }
-  
   return { valid: true };
 };
 
@@ -140,7 +132,7 @@ const SignUp = ({ onSwitch }) => {
     password: '',
     confirmPassword: '',
     fullname: '',
-    acceptedTerms: false
+    acceptedTerms: false,
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -148,9 +140,9 @@ const SignUp = ({ onSwitch }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -169,17 +161,17 @@ const SignUp = ({ onSwitch }) => {
 
   const nextStep = () => {
     if (step === 1 && !validateStep1()) return;
-    setStep(step + 1);
+    setStep(2);
   };
 
   const prevStep = () => {
-    setStep(step - 1);
+    setStep(1);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // First validation layer
+    // First, do client‐side checks:
     const validation = validateRegistration(formData);
     if (!validation.valid) {
       setError(validation.error);
@@ -191,8 +183,9 @@ const SignUp = ({ onSwitch }) => {
       return;
     }
 
+    // Step 2: ensure T&C was ticked
     if (!formData.acceptedTerms) {
-      setError('You must accept the terms and conditions');
+      setError('You must accept the terms and conditions.');
       return;
     }
 
@@ -200,20 +193,19 @@ const SignUp = ({ onSwitch }) => {
     setError('');
 
     try {
+      // Send exactly the properties DRF expects:
       const result = await signUp({
+        fullname: formData.fullname,
         email: formData.email,
         password: formData.password,
-        fullname: formData.fullname,
-        confirmPassword: formData.confirmPassword, 
-
-        // is_instructor: false
+        confirmPassword: formData.confirmPassword,
       });
-    
+
       if (!result.success) {
         setError(result.error || 'Registration failed. Please try again.');
       }
     } catch (err) {
-      console.error("Signup error:", err);
+      console.error('Signup error (unexpected):', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
@@ -226,16 +218,17 @@ const SignUp = ({ onSwitch }) => {
         <ProgressStep active={step >= 1}>1</ProgressStep>
         <ProgressStep active={step >= 2}>2</ProgressStep>
       </FormProgress>
-      
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      
+
       <Form onSubmit={handleSubmit}>
+        {/* ─── STEP 1 ─── */}
         <FormStep active={step === 1}>
           <FormHeader>
             <h2>Join Edenites Academy</h2>
             <p>Start your learning journey today</p>
           </FormHeader>
-          
+
           <FormGroup>
             <Label>Full Name</Label>
             <Input
@@ -247,7 +240,7 @@ const SignUp = ({ onSwitch }) => {
               required
             />
           </FormGroup>
-          
+
           <FormGroup>
             <Label>Password</Label>
             <Input
@@ -255,12 +248,12 @@ const SignUp = ({ onSwitch }) => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Enter a strong password (8-72 characters)"
+              placeholder="Enter a strong password (8+ chars)"
               minLength="8"
               required
             />
           </FormGroup>
-          
+
           <FormGroup>
             <Label>Confirm Password</Label>
             <Input
@@ -272,16 +265,19 @@ const SignUp = ({ onSwitch }) => {
               required
             />
           </FormGroup>
-          
+
           <AuthButton
             type="button"
             onClick={nextStep}
-            disabled={!formData.fullname || !formData.password || !formData.confirmPassword}
+            disabled={
+              !formData.fullname || !formData.password || !formData.confirmPassword
+            }
           >
             Next
           </AuthButton>
         </FormStep>
 
+        {/* ─── STEP 2 ─── */}
         <FormStep active={step === 2}>
           <FormGroup>
             <Label>Email Address</Label>
@@ -290,24 +286,23 @@ const SignUp = ({ onSwitch }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="eg.gabbytech101@gmail.com"
+              placeholder="eg. you@example.com"
               required
             />
           </FormGroup>
-          
+
           <FormCheckbox>
             <input
               type="checkbox"
               name="acceptedTerms"
               checked={formData.acceptedTerms}
               onChange={handleChange}
-              required
             />
             <PrivacyAcceptance>
-              I accept Edenites Academy's Terms of Use and Privacy Notice
+              I accept Edenites Academy’s Terms of Use and Privacy Notice
             </PrivacyAcceptance>
           </FormCheckbox>
-          
+
           <FormNavigation>
             <NavButton type="prev" onClick={prevStep}>
               Back
@@ -316,14 +311,17 @@ const SignUp = ({ onSwitch }) => {
               type="submit"
               disabled={!formData.acceptedTerms || isLoading}
             >
-              {isLoading ? 'Creating account...' : 'Join for Free'}
+              {isLoading ? 'Creating account…' : 'Join for Free'}
             </AuthButton>
           </FormNavigation>
         </FormStep>
       </Form>
-      
+
       <FormFooter>
-        <p>Already have an account? <SwitchFormButton onClick={onSwitch}>Log in</SwitchFormButton></p>
+        <p>
+          Already have an account?{' '}
+          <SwitchFormButton onClick={onSwitch}>Log in</SwitchFormButton>
+        </p>
       </FormFooter>
     </SignUpContainer>
   );

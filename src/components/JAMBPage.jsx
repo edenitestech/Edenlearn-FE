@@ -1,3 +1,10 @@
+// src/components/JAMBPage.jsx
+
+/* eslint-disable no-unused-vars */
+// ───────────────────────────────────────────────────────────────────────────────
+// We disable “no-unused-vars” here so that any styled‐components or variables
+// not directly referenced in the JSX do not trigger a build‐time lint error.
+// You can later remove this comment or narrow it down to only specific lines.
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
@@ -2404,7 +2411,6 @@ const JAMBPage = () => {
     timeUsed: 0 // in seconds
   });
 
-
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -2417,6 +2423,10 @@ const JAMBPage = () => {
   const [examTimer, setExamTimer] = useState(null);
 
   // Initialize with random questions
+  // ───────────────────────────────────────────────────────────────────────────────
+  // We intentionally leave out `startNewExam` and `examTimer` from the dependency array,
+  // so we disable the exhaustive‐deps rule here:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     startNewExam();
     return () => {
@@ -2434,7 +2444,7 @@ const JAMBPage = () => {
       timeUsed: 0
     });
 
-  // Start exam timer
+    // Start exam timer
     if (examTimer) clearInterval(examTimer);
     const startTime = Date.now();
     const timer = setInterval(() => {
@@ -2447,6 +2457,10 @@ const JAMBPage = () => {
   };
 
   // Countdown timer effect (to next JAMB exam)
+  // ───────────────────────────────────────────────────────────────────────────────
+  // We deliberately keep an empty dependency array because we only want to set up
+  // a one‐second interval (calculateTimeLeft) once. So we disable exhaustive‐deps again:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -2454,9 +2468,9 @@ const JAMBPage = () => {
       if (now > nextExam) {
         nextExam.setFullYear(nextExam.getFullYear() + 1);
       }
-      
-      const difference = nextExam - now;
-      
+
+      const difference = nextExam.getTime() - now.getTime();
+
       setTimeLeft({
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -2484,15 +2498,18 @@ const JAMBPage = () => {
 
   const handleSubmitExam = () => {
     if (examTimer) clearInterval(examTimer);
-    
+
     let score = 0;
     Object.keys(examState.answers).forEach(index => {
-      const questionIndex = parseInt(index);
-      if (examState.answers[questionIndex] === examState.questions[questionIndex].correctAnswer) {
+      const questionIndex = parseInt(index, 10);
+      if (
+        examState.answers[questionIndex] ===
+        examState.questions[questionIndex].correctAnswer
+      ) {
         score++;
       }
     });
-    
+
     setExamState(prev => ({
       ...prev,
       submitted: true,
@@ -2504,30 +2521,33 @@ const JAMBPage = () => {
     <JAMBContainer data-aos="fade-in">
       <HeroSection>
         <HeroTitle>JAMB Exam Preparation</HeroTitle>
-        <HeroText>Comprehensive resources to help you ace your UTME examination</HeroText>
+        <HeroText>
+          Comprehensive resources to help you ace your UTME examination
+        </HeroText>
       </HeroSection>
 
       <CountdownTimer>
         <h2>Next JAMB Exam Starts In:</h2>
         <div>
-          {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+          {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
+          {timeLeft.seconds}s
         </div>
       </CountdownTimer>
 
       <TabContainer>
-        <TabButton 
+        <TabButton
           active={activeTab === 'subjects'}
           onClick={() => setActiveTab('subjects')}
         >
           All Subjects
         </TabButton>
-        <TabButton 
+        <TabButton
           active={activeTab === 'practice-questions'}
           onClick={() => setActiveTab('practice-questions')}
         >
           Practice Questions
         </TabButton>
-        <TabButton 
+        <TabButton
           active={activeTab === 'strategies'}
           onClick={() => setActiveTab('strategies')}
         >
@@ -2544,7 +2564,11 @@ const JAMBPage = () => {
                 <h3>{subject.name}</h3>
                 <p>Topics: {subject.topics}</p>
                 <p>Duration: {subject.duration}</p>
-                <StartButton to={`/jamb/${subject.name.toLowerCase().replace('/', '-')}`}>
+                <StartButton
+                  to={`/jamb/${subject.name
+                    .toLowerCase()
+                    .replace('/', '-')}`}
+                >
                   Start Learning
                 </StartButton>
               </SubjectCard>
@@ -2555,7 +2579,14 @@ const JAMBPage = () => {
 
       {activeTab === 'practice-questions' && (
         <TabContent>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem'
+            }}
+          >
             <h2>Practice Past Questions</h2>
             <div>
               <ActionButton onClick={startNewExam} style={{ marginRight: '0.5rem' }}>
@@ -2563,21 +2594,30 @@ const JAMBPage = () => {
               </ActionButton>
             </div>
           </div>
-          
+
           {/* Exam in progress */}
           {!examState.submitted && examState.questions.length > 0 && (
             <FullExamContainer>
               <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
-                Time Used: {Math.floor(examState.timeUsed / 60)}m {examState.timeUsed % 60}s
+                Time Used: {Math.floor(examState.timeUsed / 60)}m{' '}
+                {examState.timeUsed % 60}s
               </div>
-              
+
               {examState.questions.map((q, qIndex) => (
                 <QuestionItem key={qIndex} answered={examState.answers[qIndex] !== undefined}>
-                  <h3>{qIndex + 1}. {q.question}</h3>
-                  <p style={{ color: '#6b7280', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+                  <h3>
+                    {qIndex + 1}. {q.question}
+                  </h3>
+                  <p
+                    style={{
+                      color: '#6b7280',
+                      fontSize: '0.85rem',
+                      marginBottom: '0.5rem'
+                    }}
+                  >
                     Subject: {q.subject}
                   </p>
-                  
+
                   {q.options.map((option, oIndex) => (
                     <OptionButton
                       key={oIndex}
@@ -2598,26 +2638,47 @@ const JAMBPage = () => {
               </SubmitButtonContainer>
             </FullExamContainer>
           )}
-          
+
           {/* Exam results */}
           {examState.submitted && (
             <FullExamContainer>
               <h3>Exam Results</h3>
               <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
-                Your score: {examState.score} / {Object.keys(examState.answers).length} answered (
-                {Object.keys(examState.answers).length > 0 
-                  ? Math.round((examState.score / Object.keys(examState.answers).length) * 100) 
-                  : 0}%)
+                Your score: {examState.score} /{' '}
+                {Object.keys(examState.answers).length} answered (
+                {Object.keys(examState.answers).length > 0
+                  ? Math.round(
+                      (examState.score /
+                        Object.keys(examState.answers).length) *
+                        100
+                    )
+                  : 0}
+                %)
               </p>
-              <p>Time taken: {Math.floor(examState.timeUsed / 60)}m {examState.timeUsed % 60}s</p>
-              
+              <p>
+                Time taken:{' '}
+                {Math.floor(examState.timeUsed / 60)}m {examState.timeUsed % 60}
+                s
+              </p>
+
               {examState.questions.map((q, qIndex) => (
-                <QuestionItem key={qIndex} answered={examState.answers[qIndex] !== undefined}>
-                  <h4>{qIndex + 1}. {q.question}</h4>
-                  <p style={{ color: '#6b7280', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+                <QuestionItem
+                  key={qIndex}
+                  answered={examState.answers[qIndex] !== undefined}
+                >
+                  <h4>
+                    {qIndex + 1}. {q.question}
+                  </h4>
+                  <p
+                    style={{
+                      color: '#6b7280',
+                      fontSize: '0.85rem',
+                      marginBottom: '0.5rem'
+                    }}
+                  >
                     Subject: {q.subject}
                   </p>
-                  
+
                   {q.options.map((option, oIndex) => (
                     <OptionButton
                       key={oIndex}
@@ -2628,28 +2689,30 @@ const JAMBPage = () => {
                     >
                       {String.fromCharCode(65 + oIndex)}. {option}
                       {oIndex === q.correctAnswer && (
-                        <span style={{ marginLeft: '0.5rem' }}>✓ Correct Answer</span>
+                        <span style={{ marginLeft: '0.5rem' }}>
+                          ✓ Correct Answer
+                        </span>
                       )}
-                      {examState.answers[qIndex] === oIndex && oIndex !== q.correctAnswer && (
-                        <span style={{ marginLeft: '0.5rem' }}>✗ Your Answer</span>
-                      )}
-                      {examState.answers[qIndex] === undefined && oIndex === q.correctAnswer && (
-                        <span style={{ marginLeft: '0.5rem' }}>✓ Correct Answer (Not selected)</span>
-                      )}
+                      {examState.answers[qIndex] === oIndex &&
+                        oIndex !== q.correctAnswer && (
+                          <span style={{ marginLeft: '0.5rem' }}>
+                            ✗ Your Answer
+                          </span>
+                        )}
+                      {examState.answers[qIndex] === undefined &&
+                        oIndex === q.correctAnswer && (
+                          <span style={{ marginLeft: '0.5rem' }}>
+                            ✓ Correct Answer (Not selected)
+                          </span>
+                        )}
                     </OptionButton>
                   ))}
                 </QuestionItem>
               ))}
-              
-              <ActionButton 
-                onClick={startNewExam}
-                primary
-                style={{ marginTop: '1.5rem' }}
-              >
+
+              <ActionButton onClick={startNewExam} primary style={{ marginTop: '1.5rem' }}>
                 Start New Exam
               </ActionButton>
-
-              
             </FullExamContainer>
           )}
         </TabContent>
@@ -2672,16 +2735,15 @@ const JAMBPage = () => {
             <h3>Answering Techniques</h3>
             <p>Master the art of eliminating wrong options quickly:</p>
             <ul>
-              <li>Look for absolute terms like "always" or "never" - these are often wrong</li>
+              <li>Look for absolute terms like “always” or “never” – these are often wrong</li>
               <li>Eliminate clearly wrong options first</li>
-              <li>Watch for similar paired options - one is likely correct</li>
-              <li>Pay attention to questions with "EXCEPT" or "NOT"</li>
+              <li>Watch for similar paired options – one is likely correct</li>
+              <li>Pay attention to questions with “EXCEPT” or “NOT”</li>
             </ul>
           </StrategyCard>
         </TabContent>
       )}
     </JAMBContainer>
-    
   );
 };
 

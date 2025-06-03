@@ -1,11 +1,16 @@
+// src/components/Profile.jsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 // Academic-themed background image from Unsplash API
-const academicBackground = 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3';
+const academicBackground =
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3';
 
+//
 // Styled Components with Parallax Effect
+//
 const TestimonialsContainer = styled.section`
   padding: 2rem 0;
   background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(248, 249, 250, 0.9)),
@@ -109,7 +114,7 @@ const Quote = styled.p`
 `;
 
 const Rating = styled.div`
-  color: #FFC107;
+  color: #ffc107;
   font-size: 1rem;
 `;
 
@@ -131,7 +136,7 @@ const NavButton = styled.button`
   transition: background 0.3s ease;
 
   &:hover {
-    background: #2ECC40;
+    background: #2ecc40;
   }
 
   &:first-of-type {
@@ -159,13 +164,13 @@ const Dot = styled.button`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: ${props => props.active ? '#001f3f' : '#ccc'};
+  background: ${props => (props.active ? '#001f3f' : '#ccc')};
   border: none;
   cursor: pointer;
   transition: background 0.3s ease;
 
   &:hover {
-    background: #2ECC40;
+    background: #2ecc40;
   }
 `;
 
@@ -176,7 +181,8 @@ const testimonials = [
     name: 'Henry Ifeanyi',
     role: 'Software Developer',
     avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    quote: 'Edenites Academy transformed my career. The AWS certification course helped me land my dream job at Amazon!',
+    quote:
+      'Edenites Academy transformed my career. The AWS certification course helped me land my dream job at Amazon!',
     rating: 5
   },
   {
@@ -184,7 +190,8 @@ const testimonials = [
     name: 'Chinaza Miracle O',
     role: 'Fashion Designer',
     avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    quote: 'The leather crafting courses are exceptional. I started my own business after completing just two courses!',
+    quote:
+      'The leather crafting courses are exceptional. I started my own business after completing just two courses!',
     rating: 5
   },
   {
@@ -192,7 +199,8 @@ const testimonials = [
     name: 'Clara Ede-Nwegede',
     role: 'Data Analyst',
     avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-    quote: 'The data science curriculum is comprehensive and practical. I applied what I learned immediately at work.',
+    quote:
+      'The data science curriculum is comprehensive and practical. I applied what I learned immediately at work.',
     rating: 4
   },
   {
@@ -200,7 +208,8 @@ const testimonials = [
     name: 'Emeka Okoro',
     role: 'JAMB Candidate',
     avatar: 'https://randomuser.me/api/portraits/men/75.jpg',
-    quote: 'The JAMB prep materials were spot on! I scored 320 thanks to the practice questions and time management tips.',
+    quote:
+      'The JAMB prep materials were spot on! I scored 320 thanks to the practice questions and time management tips.',
     rating: 5
   },
   {
@@ -208,7 +217,8 @@ const testimonials = [
     name: 'Amina Mohammed',
     role: 'Fashion Entrepreneur',
     avatar: 'https://randomuser.me/api/portraits/women/63.jpg',
-    quote: 'The business modules in the fashion design course helped me structure my startup properly. Highly recommended!',
+    quote:
+      'The business modules in the fashion design course helped me structure my startup properly. Highly recommended!',
     rating: 5
   },
   {
@@ -216,11 +226,13 @@ const testimonials = [
     name: 'Oluwaseun Adebayo',
     role: 'IT Consultant',
     avatar: 'https://randomuser.me/api/portraits/men/81.jpg',
-    quote: 'The Microsoft certification track gave me the credibility I needed to attract high-paying clients.',
+    quote:
+      'The Microsoft certification track gave me the credibility I needed to attract high-paying clients.',
     rating: 4
   }
 ];
 
+// ───────────────────────────────────────────────────────────────────────────────
 // Main Component
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -230,6 +242,7 @@ const Testimonials = () => {
   const gridRef = useRef(null);
 
   // Handle responsive layout
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -249,7 +262,8 @@ const Testimonials = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Auto-slide
+  // Auto-slide every 5 seconds
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex(prev => {
@@ -263,7 +277,7 @@ const Testimonials = () => {
     return () => clearInterval(interval);
   }, [cardsPerView, testimonials.length]);
 
-  const triggerSlide = (newIndex) => {
+  const triggerSlide = newIndex => {
     setIsAnimating(true);
     setTimeout(() => {
       setCurrentIndex(newIndex);
@@ -277,7 +291,9 @@ const Testimonials = () => {
 
   const handleNext = () => {
     const totalPages = Math.ceil(testimonials.length / cardsPerView);
-    triggerSlide(Math.min(currentIndex + cardsPerView, (totalPages - 1) * cardsPerView));
+    triggerSlide(
+      Math.min(currentIndex + cardsPerView, (totalPages - 1) * cardsPerView)
+    );
   };
 
   return (
@@ -307,7 +323,7 @@ const Testimonials = () => {
                   src={testimonial.avatar}
                   alt={testimonial.name}
                   loading="lazy"
-                  onError={(e) => {
+                  onError={e => {
                     e.target.src = 'https://via.placeholder.com/50';
                     e.target.onerror = null;
                   }}
@@ -329,16 +345,21 @@ const Testimonials = () => {
         </TestimonialsGrid>
 
         <DotsContainer>
-          {Array.from({ length: Math.ceil(testimonials.length / cardsPerView) }).map((_, index) => (
-            <Dot
-              key={index}
-              active={currentIndex / cardsPerView === index}
-              onClick={() => triggerSlide(index * cardsPerView)}
-            />
-          ))}
+          {Array.from({ length: Math.ceil(testimonials.length / cardsPerView) }).map(
+            (_, index) => (
+              <Dot
+                key={index}
+                active={currentIndex / cardsPerView === index}
+                onClick={() => triggerSlide(index * cardsPerView)}
+              />
+            )
+          )}
         </DotsContainer>
 
-        <NavButton onClick={handleNext} disabled={currentIndex + cardsPerView >= testimonials.length}>
+        <NavButton
+          onClick={handleNext}
+          disabled={currentIndex + cardsPerView >= testimonials.length}
+        >
           <FaChevronRight />
         </NavButton>
       </Container>

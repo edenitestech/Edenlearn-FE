@@ -1,8 +1,9 @@
+// Login.jsx
+
 import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import {
-  AuthContainer,
   FormHeader,
   Form,
   FormGroup,
@@ -13,9 +14,8 @@ import {
   FormFooter,
   SwitchFormButton,
   PasswordLabelContainer,
-  ForgotPasswordLink
+  ForgotPasswordLink,
 } from '../components/AuthStyles';
-import styled from 'styled-components';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -25,7 +25,7 @@ const LoginContainer = styled.div`
 const Login = ({ onSwitch }) => {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,23 +33,26 @@ const Login = ({ onSwitch }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-// Handling the error message via console
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      const result = await login(formData);
-      
+      const result = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+
       if (!result.success) {
         setError(result.error || 'Login failed. Please try again.');
       }
     } catch (err) {
+      console.error('Login error (unexpected):', err);
       setError('An unexpected error occurred. Please try again.');
-      console.error("Login error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -61,9 +64,9 @@ const Login = ({ onSwitch }) => {
         <h2>Welcome back to Edenites Academy</h2>
         <p>Login to continue your learning journey</p>
       </FormHeader>
-      
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      
+
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label htmlFor="email">Email</Label>
@@ -73,11 +76,11 @@ const Login = ({ onSwitch }) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="name@email.com"
+            placeholder="you@example.com"
             required
           />
         </FormGroup>
-        
+
         <FormGroup>
           <PasswordLabelContainer>
             <Label htmlFor="password">Password</Label>
@@ -95,17 +98,20 @@ const Login = ({ onSwitch }) => {
             required
           />
         </FormGroup>
-        
+
         <AuthButton
           type="submit"
           disabled={!formData.email || !formData.password || isLoading}
         >
-          {isLoading ? 'Logging in...' : 'Login'}
+          {isLoading ? 'Logging in…' : 'Login'}
         </AuthButton>
       </Form>
-      
+
       <FormFooter>
-        <p>New to Edenites? <SwitchFormButton onClick={onSwitch}>Join for Free</SwitchFormButton></p>
+        <p>
+          New to Edenites?{' '}
+          <SwitchFormButton onClick={onSwitch}>Join for Free</SwitchFormButton>
+        </p>
       </FormFooter>
     </LoginContainer>
   );
