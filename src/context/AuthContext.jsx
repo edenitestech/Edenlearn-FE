@@ -13,47 +13,46 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Some React Rules:
-  // Never modify the State manually
-  // Never mutate the State 
-  // State can only be changed with its own set function
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      api.get('/auth/profile/')
+        .then(res => setCurrentUser(res.data))
+        .catch(() => {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken'); 
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
-  // Take cognizance of the dependency array always used in the useEffect, i.e []
-  // Take cognizance also of the use of components, states, props and hooks.
-
-  // Verify token on initial load
-    useEffect(() => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        api.get('/auth/profile/') // Note trailing slash
-          .then(res => setCurrentUser(res.data))
-          .catch(() => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken'); 
-          })
-          .finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    }, []);
-
-  
-
-  // Updated signup function
+  // FIXED: signUp function with proper payload and headers
   const signUp = async (formData) => {
     if (!formData.email || !formData.password || !formData.fullname) {
       return { success: false, error: 'Missing required fields' };
     }
+    
     try {
-      console.log("Registration payload:", formData);
-      const { data } = await api.post('/auth/register', formData 
-        // fullname: formData.fullname,
-        // email: formData.email,
-        // password: formData.password,
-        // confirm_password: formData.confirmPassword,
-        // is_instructor: false
-        // formData
-      );
+      // Create properly formatted payload with snake_case keys
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+        full_name: formData.fullname, // Changed to snake_case
+        confirm_password: formData.confirmPassword // Changed to snake_case
+      };
+
+      console.log("Registration payload:", payload);
+      
+      // FIXED: Added trailing slash and explicit headers
+      const { data } = await api.post('/auth/register/', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
       console.log("Registration response:", data);
 
       if (!data.access || !data.refresh) {
@@ -62,60 +61,68 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
-      setCurrentUser(data.user || { email: formData.email, name: formData.fullname });
+      setCurrentUser(data.user || { 
+        email: formData.email, 
+        name: formData.fullname 
+      });
+      
       navigate('/dashboard');
       return { success: true };
 
     } catch (error) {
-      console.error("Full registration error:", {
+      // IMPROVED: Better error logging
+      console.error("Registration error details:", {
         message: error.message,
-        response: error.response?.data,
         status: error.response?.status,
-        headers: error.response?.headers,
+        data: error.response?.data,
         config: error.config
       });
 
       let errorMessage = 'Registration failed';
-      if (error.response) {
-        // Try to extract more detailed error information
-        if (error.response.data) {
-          // For Django REST framework errors
-          if (error.response.data.detail) {
-            errorMessage = error.response.data.detail;
-          } 
-          // For validation errors
-          else if (typeof error.response.data === 'object') {
-            errorMessage = Object.entries(error.response.data)
-              .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
-              .join('; ');
-          }
-          // For string errors
-          else if (typeof error.response.data === 'string') {
-            errorMessage = error.response.data;
-          }
+      if (error.response?.data) {
+        // Handle Django REST framework errors
+        if (error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        } 
+        // Handle validation errors
+        else if (typeof error.response.data === 'object') {
+          errorMessage = Object.entries(error.response.data)
+            .flatMap(([key, errors]) => 
+              Array.isArray(errors) 
+                ? errors.map(err => `${key}: ${err}`)
+                : `${key}: ${errors}`
+            )
+            .join('; ');
         }
+        else if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
       }
 
       return { 
         success: false, 
-        error: errorMessage || 'Unknown error occurred during registration' 
+        error: errorMessage 
       };
     }
-        
   };
 
-  
-
-  // Updated login function
+  // ADDED: login function that was missing
   const login = async ({ email, password }) => {
     try {
-      console.log("Login attempt with:", { email, password }); // Debug
+      console.log("Login attempt with:", { email, password });
       const { data } = await api.post('/auth/login/', {
-        email, // Changed back to email if your backend expects email
+        email,
         password
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
       });
 
-      console.log("Login response:", data); // Debug
+      console.log("Login response:", data);
 
       if (!data.access || !data.refresh) {
         throw new Error("Invalid response from server - missing tokens");
@@ -123,20 +130,23 @@ export function AuthProvider({ children }) {
 
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
-      setCurrentUser(data.user || { email }); // Fallback if user data not returned
+      setCurrentUser(data.user || { email });
       navigate('/dashboard');
       return { success: true };
 
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message); // Debug
-      let message = 'Login failed';
+      console.error("Login error details:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        config: error.config
+      });
       
-      if (error.response) {
-        // Handle different error response formats
-        message = error.response.data?.detail || 
-                  error.response.data?.message || 
-                  (typeof error.response.data === 'string' ? error.response.data : 
-                  JSON.stringify(error.response.data));
+      let message = 'Login failed';
+      if (error.response?.data) {
+        message = error.response.data.detail || 
+                 error.response.data.message || 
+                 JSON.stringify(error.response.data);
       }
       
       return { success: false, error: message };
@@ -148,7 +158,11 @@ export function AuthProvider({ children }) {
     const refresh = localStorage.getItem('refreshToken');
     if (refresh) {
       try {
-        await api.post('/auth/logout/', { refresh }); // Trailing slash
+        await api.post('/auth/logout/', { refresh }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
       } catch (e) {
         console.warn('Logout token blacklist failed', e);
       }
@@ -158,12 +172,12 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
     navigate('/login');
   };
-  // To create the value object AFTER all functions are defined
+
   const value = {
     currentUser,
     loading,
     signUp,
-    login,
+    login, // Now properly defined
     logout
   };
 
