@@ -13,21 +13,23 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // On mount, check authentication status
+ // On mount, check authentication status
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
-      api.get('/auth/profile/')
-        .then(res => setCurrentUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        api.get('/auth/profile/')
+          .then(res => setCurrentUser(res.data))
+          .catch(() => {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+          })
+          .finally(() => setLoading(false));
+      } else {setLoading(false)};
     }
   }, []);
+
 
   // SIGN UP
   const signUp = async ({ email, password, confirmPassword, fullname }) => {
