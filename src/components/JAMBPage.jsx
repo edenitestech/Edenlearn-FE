@@ -2422,45 +2422,37 @@ const JAMBPage = () => {
   // Timer for exam duration
   const [examTimer, setExamTimer] = useState(null);
 
-  // Initialize with random questions
-  // ───────────────────────────────────────────────────────────────────────────────
-  // We intentionally leave out `startNewExam` and `examTimer` from the dependency array,
-  // so we disable the exhaustive‐deps rule here:
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Initialize exam and timer
   useEffect(() => {
-    startNewExam();
+    const initialExam = () => {
+      const shuffled = [...allPracticeQuestions].sort(() => 0.5 - Math.random());
+      setExamState({
+        questions: shuffled.slice(0, 10),
+        answers: {},
+        submitted: false,
+        score: 0,
+        timeUsed: 0
+      });
+
+      // Start exam timer
+      const startTime = Date.now();
+      const timer = setInterval(() => {
+        setExamState(prev => ({
+          ...prev,
+          timeUsed: Math.floor((Date.now() - startTime) / 1000)
+        }));
+      }, 1000);
+      setExamTimer(timer);
+    };
+
+    initialExam();
+    
     return () => {
       if (examTimer) clearInterval(examTimer);
     };
   }, []);
 
-  const startNewExam = () => {
-    const shuffled = [...allPracticeQuestions].sort(() => 0.5 - Math.random());
-    setExamState({
-      questions: shuffled.slice(0, 10),
-      answers: {},
-      submitted: false,
-      score: 0,
-      timeUsed: 0
-    });
-
-    // Start exam timer
-    if (examTimer) clearInterval(examTimer);
-    const startTime = Date.now();
-    const timer = setInterval(() => {
-      setExamState(prev => ({
-        ...prev,
-        timeUsed: Math.floor((Date.now() - startTime) / 1000)
-      }));
-    }, 1000);
-    setExamTimer(timer);
-  };
-
-  // Countdown timer effect (to next JAMB exam)
-  // ───────────────────────────────────────────────────────────────────────────────
-  // We deliberately keep an empty dependency array because we only want to set up
-  // a one‐second interval (calculateTimeLeft) once. So we disable exhaustive‐deps again:
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Countdown timer effect
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -2483,6 +2475,30 @@ const JAMBPage = () => {
     const timer = setInterval(calculateTimeLeft, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Memoized exam starter function
+  const startNewExam = useCallback(() => {
+    if (examTimer) clearInterval(examTimer);
+
+    const shuffled = [...allPracticeQuestions].sort(() => 0.5 - Math.random());
+    setExamState({
+      questions: shuffled.slice(0, 10),
+      answers: {},
+      submitted: false,
+      score: 0,
+      timeUsed: 0
+    });
+
+    // Start exam timer
+    const startTime = Date.now();
+    const timer = setInterval(() => {
+      setExamState(prev => ({
+        ...prev,
+        timeUsed: Math.floor((Date.now() - startTime) / 1000)
+      }));
+    }, 1000);
+    setExamTimer(timer);
+  }, [allPracticeQuestions, examTimer]);
 
   const handleSelectAnswer = (questionIndex, optionIndex) => {
     if (!examState.submitted) {
