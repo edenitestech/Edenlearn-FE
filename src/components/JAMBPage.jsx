@@ -6,10 +6,9 @@
 // not directly referenced in the JSX do not trigger a build‐time lint error.
 // You can later remove this comment or narrow it down to only specific lines.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useCallback } from 'react';
 
 const JAMBContainer = styled.div`
   max-width: 1200px;
