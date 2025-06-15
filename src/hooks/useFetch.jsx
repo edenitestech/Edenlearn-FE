@@ -189,27 +189,26 @@ export const useFetch = (url, useMockData = false) => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        if (useMockData) {
-          // Simulate API delay
-          await new Promise(resolve => setTimeout(resolve, 800));
-          setData(mockCourses);
-        } else {
-          const response = await axios.get(url);
-          setData(response.data);
-        }
-      } catch (err) {
-        setError(err);
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      if (useMockData) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setData(mockCourses);
+      } else {
+        const response = await axios.get(url);
+        setData(response.data);
       }
-    };
+    } catch (err) {
+      setError(err);
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
-  }, [url, useMockData]);
+  fetchData();
+}, [url, useMockData, mockCourses]);
 
   return { data, loading, error };
 };

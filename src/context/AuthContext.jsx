@@ -13,9 +13,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
- // On mount, check authentication status
+  // On mount, check authentication status
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('accessToken');
       if (token) {
@@ -26,10 +25,11 @@ export function AuthProvider({ children }) {
             localStorage.removeItem('refreshToken');
           })
           .finally(() => setLoading(false));
-      } else {setLoading(false)};
+      } else {
+        setLoading(false);
+      }
     }
   }, []);
-
 
   // SIGN UP
   const signUp = async ({ email, password, confirmPassword, fullname }) => {
@@ -38,7 +38,6 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      // Create properly formatted payload with snake_case keys
       const payload = {
         email,
         password,
@@ -127,7 +126,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
       
-      // Fetch user profile
       const profileResp = await api.get('/auth/profile/');
       setCurrentUser(profileResp.data);
       
